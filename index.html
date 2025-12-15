@@ -51,26 +51,6 @@
             font-size: 1.1rem;
             color: #888888;
             font-weight: 400;
-            margin-bottom: 30px;
-        }
-
-        .linkedin-link {
-            display: inline-block;
-            color: #b8b8b8;
-            text-decoration: none;
-            padding: 12px 32px;
-            border: 1px solid #2a2a2a;
-            background-color: #151515;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .linkedin-link:hover {
-            border-color: #404040;
-            background-color: #1a1a1a;
-            color: #ffffff;
         }
 
         /* Main Content */
@@ -106,27 +86,37 @@
             color: #d0d0d0;
         }
 
-        /* Interests Grid */
-        .interests-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1px;
-            background-color: #1a1a1a;
-            border: 1px solid #1a1a1a;
-            margin-top: 30px;
+        /* Interests Text */
+        .interests-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #b8b8b8;
+            font-weight: 300;
         }
 
-        .interest-item {
-            background-color: #0a0a0a;
-            padding: 28px 32px;
-            font-size: 0.95rem;
-            color: #d0d0d0;
-            font-weight: 400;
-            transition: background-color 0.3s ease;
+        /* LinkedIn Link */
+        .linkedin-section {
+            text-align: center;
+            margin-top: 60px;
         }
 
-        .interest-item:hover {
+        .linkedin-link {
+            display: inline-block;
+            color: #b8b8b8;
+            text-decoration: none;
+            padding: 12px 32px;
+            border: 1px solid #2a2a2a;
             background-color: #151515;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .linkedin-link:hover {
+            border-color: #404040;
+            background-color: #1a1a1a;
+            color: #ffffff;
         }
 
         /* Footer */
@@ -167,10 +157,6 @@
             .section {
                 margin-bottom: 60px;
             }
-
-            .interests-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
@@ -190,7 +176,6 @@
             <div class="header-content">
                 <h1>Johannes Solibieda</h1>
                 <p class="subtitle">Bachelor Student in Economics</p>
-                <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" class="linkedin-link">CONNECT ON LINKEDIN</a>
             </div>
         </header>
 
@@ -198,27 +183,20 @@
             <section class="section">
                 <h2 class="section-title">About</h2>
                 <p class="content-text">
-                    I am a Bachelor student in Economics at the <span class="university">University of St. Gallen</span>, 
-                    focusing on financial markets and quantitative analysis. My academic pursuits center on understanding 
-                    complex financial instruments and their applications in modern capital markets.
-                </p>
-                <p class="content-text">
-                    My work explores the intersection of traditional finance and innovative asset structuring, 
-                    with particular emphasis on fixed income markets and the transformation of illiquid assets 
-                    into tradable securities.
+                    I am a Bachelor student in Economics at the <span class="university">University of St. Gallen</span>.
                 </p>
             </section>
 
             <section class="section">
-                <h2 class="section-title">Areas of Focus</h2>
-                <div class="interests-grid">
-                    <div class="interest-item">Fixed Income Investing</div>
-                    <div class="interest-item">Securitization of Illiquid Assets</div>
-                    <div class="interest-item">Quantitative Finance</div>
-                    <div class="interest-item">Economics</div>
-                    <div class="interest-item">Agriculture</div>
-                </div>
+                <h2 class="section-title">Interests</h2>
+                <p class="interests-text">
+                    Fixed Income Investing, Securitization of Illiquid Assets, Quantitative Finance, Economics, Agriculture
+                </p>
             </section>
+
+            <div class="linkedin-section">
+                <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" class="linkedin-link">CONNECT ON LINKEDIN</a>
+            </div>
         </main>
 
         <footer>
