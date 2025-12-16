@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canela font - using alternative elegant serif with similar characteristics -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,7 +17,7 @@
         }
 
         body {
-            font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            font-family: 'Cormorant', Georgia, 'Times New Roman', serif;
             background-color: #ffffff;
             color: #000000;
             line-height: 1.6;
@@ -121,7 +123,7 @@
         }
 
         .section-title {
-            font-size: 3.5rem;
+            font-size: 4.5rem;
             font-weight: 700;
             color: #000000;
             margin-bottom: 60px;
@@ -194,6 +196,30 @@
             color: #ffffff;
         }
 
+        /* Education Section - Black Background */
+        .education-section {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 100px 0;
+        }
+
+        .education-section .section-title {
+            color: #ffffff;
+        }
+
+        .education-section .content-card {
+            background-color: #000000;
+            border-color: #ffffff;
+        }
+
+        .education-section .card-title {
+            color: #ffffff;
+        }
+
+        .education-section .card-content {
+            color: #ffffff;
+        }
+
         /* Image Gallery Section */
         .image-gallery {
             display: flex;
@@ -222,10 +248,10 @@
             color: #ffffff;
             background-color: #000000;
             text-decoration: none;
-            padding: 18px 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 1px;
+            padding: 30px 60px;
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
             transition: all 0.3s ease;
             border: 2px solid #000000;
         }
@@ -265,7 +291,7 @@
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .content-grid {
@@ -304,8 +330,13 @@
             }
 
             .section-title {
-                font-size: 1.8rem;
+                font-size: 2rem;
                 margin-bottom: 40px;
+            }
+
+            .linkedin-link {
+                font-size: 2rem;
+                padding: 20px 40px;
             }
 
             .content-card {
@@ -339,10 +370,9 @@
         </div>
     </section>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Education Section -->
-        <section class="content-section">
+    <!-- Education Section (Full Width) -->
+    <section class="education-section">
+        <div class="container">
             <h2 class="section-title">Education</h2>
             <div class="content-grid">
                 <div class="content-card">
@@ -358,8 +388,11 @@
                     <p class="card-content">Abitur</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
+    <!-- Main Content -->
+    <div class="container">
         <!-- Work Experience Section -->
         <section class="content-section">
             <h2 class="section-title">Work Experience</h2>
