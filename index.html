@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Johannes Solibieda - Economics Student</title>
+    <title>Johannes Solibieda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,192 +16,397 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #0a0a0a;
-            color: #e0e0e0;
+            background-color: #ffffff;
+            color: #000000;
             line-height: 1.6;
-            font-weight: 300;
-            letter-spacing: 0.3px;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Navigation Bar */
+        nav {
+            background-color: #000000;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 40px;
+            padding: 0 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Header Section */
-        header {
-            padding: 80px 0 60px;
-            border-bottom: 1px solid #1a1a1a;
-        }
-
-        .header-content {
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 300;
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #ffffff;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
+            text-decoration: none;
+            letter-spacing: 0.5px;
         }
 
-        .subtitle {
-            font-size: 1.1rem;
-            color: #888888;
-            font-weight: 400;
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
         }
 
-        /* Main Content */
-        main {
-            padding: 80px 0;
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
         }
 
-        .section {
-            margin-bottom: 80px;
+        .nav-links a:hover {
+            color: #cccccc;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            background-color: #000000;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: grayscale(100%);
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ffffff;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 60px;
+        }
+
+        /* Section Styling */
+        .content-section {
+            padding: 100px 0;
         }
 
         .section-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #666666;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #1a1a1a;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 60px;
+            letter-spacing: -0.5px;
         }
 
-        .content-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #b8b8b8;
-            font-weight: 300;
+        /* Grid Layout for Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .content-card {
+            background-color: #f5f5f5;
+            padding: 40px;
+            border-left: 4px solid #000000;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #000000;
             margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
-        .university {
-            font-weight: 400;
-            color: #d0d0d0;
-        }
-
-        /* Interests Text */
-        .interests-text {
-            font-size: 1.05rem;
+        .card-content {
+            color: #333333;
+            font-size: 1rem;
             line-height: 1.8;
-            color: #b8b8b8;
-            font-weight: 300;
+            font-weight: 400;
         }
 
-        /* LinkedIn Link */
+        .card-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card-content li {
+            margin-bottom: 12px;
+            padding-left: 0;
+        }
+
+        /* Full Width Section */
+        .full-width-section {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 100px 0;
+            margin: 80px 0;
+        }
+
+        .full-width-section .section-title {
+            color: #ffffff;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .interest-item {
+            padding: 30px;
+            background-color: #1a1a1a;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .interest-item:hover {
+            background-color: #2a2a2a;
+        }
+
+        /* LinkedIn Section */
         .linkedin-section {
             text-align: center;
-            margin-top: 60px;
+            padding: 80px 0;
         }
 
         .linkedin-link {
             display: inline-block;
-            color: #b8b8b8;
+            color: #ffffff;
+            background-color: #000000;
             text-decoration: none;
-            padding: 12px 32px;
-            border: 1px solid #2a2a2a;
-            background-color: #151515;
+            padding: 18px 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
+            border: 2px solid #000000;
         }
 
         .linkedin-link:hover {
-            border-color: #404040;
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
         }
 
         /* Footer */
         footer {
-            padding: 60px 0 40px;
-            border-top: 1px solid #1a1a1a;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 60px 0;
             text-align: center;
         }
 
         .footer-text {
-            font-size: 0.85rem;
-            color: #666666;
+            font-size: 0.9rem;
             font-weight: 300;
+            letter-spacing: 0.5px;
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (max-width: 968px) {
+            .nav-container,
             .container {
-                padding: 0 25px;
+                padding: 0 30px;
             }
 
-            header {
-                padding: 60px 0 40px;
+            .hero-title {
+                font-size: 3rem;
             }
 
-            h1 {
-                font-size: 2.2rem;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
 
-            .subtitle {
-                font-size: 1rem;
+            .section-title {
+                font-size: 2rem;
             }
 
-            main {
-                padding: 60px 0;
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
             }
 
-            .section {
-                margin-bottom: 60px;
+            .nav-links {
+                gap: 20px;
             }
         }
 
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2.2rem;
             }
 
-            .content-text {
-                font-size: 0.95rem;
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+
+            .content-section {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 40px;
+            }
+
+            .content-card {
+                padding: 30px;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Johannes Solibieda</a>
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="projects.html">PROJECTS</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <img src="style-pictures/IMG_2701.jpeg" alt="Hero Image" class="hero-image">
+        <div class="hero-content">
+            <h1 class="hero-title">Johannes Solibieda</h1>
+            <p class="hero-subtitle">Economics Student | Finance | Data Science</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
     <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Johannes Solibieda</h1>
-                <p class="subtitle">Bachelor Student in Economics</p>
+        <!-- Education Section -->
+        <section class="content-section">
+            <h2 class="section-title">Education</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3 class="card-title">University of St. Gallen</h3>
+                    <p class="card-content">B.A. Economics</p>
+                </div>
+                <div class="content-card">
+                    <h3 class="card-title">McGill University, Montreal</h3>
+                    <p class="card-content">Exchange Student Finance & Mathematics</p>
+                </div>
+                <div class="content-card">
+                    <h3 class="card-title">Hartdberg-Gymnasium Bonn</h3>
+                    <p class="card-content">Abitur</p>
+                </div>
             </div>
-        </header>
+        </section>
 
-        <main>
-            <section class="section">
-                <h2 class="section-title">About</h2>
-                <p class="content-text">
-                    I am a Bachelor student in Economics at the <span class="university">University of St. Gallen</span>.
-                </p>
-            </section>
-
-            <section class="section">
-                <h2 class="section-title">Interests</h2>
-                <p class="interests-text">
-                    Fixed Income Investing, Securitization of Illiquid Assets, Quantitative Finance, Economics, Agriculture
-                </p>
-            </section>
-
-            <div class="linkedin-section">
-                <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" class="linkedin-link">CONNECT ON LINKEDIN</a>
+        <!-- Work Experience Section -->
+        <section class="content-section">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3 class="card-title">Zurich Data Scientists</h3>
+                    <p class="card-content">Data Science Intern (2025)</p>
+                </div>
+                <div class="content-card">
+                    <h3 class="card-title">Oniq</h3>
+                    <p class="card-content">Business Development Intern (2024)</p>
+                </div>
             </div>
-        </main>
-
-        <footer>
-            <p class="footer-text">© 2025 Johannes Solibieda</p>
-        </footer>
+        </section>
     </div>
+
+    <!-- Interests Section (Full Width) -->
+    <section class="full-width-section">
+        <div class="container">
+            <h2 class="section-title">Interests, Certifications & Social Engagement</h2>
+            <div class="content-grid">
+                <div class="content-card" style="background-color: #1a1a1a; border-left-color: #ffffff;">
+                    <h3 class="card-title" style="color: #ffffff;">Academic</h3>
+                    <div class="card-content" style="color: #cccccc;">
+                        <ul>
+                            <li>French Baccalauréat</li>
+                            <li>German Academic Scholarship Foundation</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="content-card" style="background-color: #1a1a1a; border-left-color: #ffffff;">
+                    <h3 class="card-title" style="color: #ffffff;">Social Engagement</h3>
+                    <div class="card-content" style="color: #cccccc;">
+                        <ul>
+                            <li>Project Leader and Consultant, Student Impact</li>
+                            <li>Swimming Instructor for Kids with Disabilities (SWAM Canada)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="content-card" style="background-color: #1a1a1a; border-left-color: #ffffff;">
+                    <h3 class="card-title" style="color: #ffffff;">Professional Interests</h3>
+                    <div class="card-content" style="color: #cccccc;">
+                        <ul>
+                            <li>Fixed Income Investing</li>
+                            <li>Securitization of Illiquid Assets</li>
+                            <li>Quantitative Finance</li>
+                            <li>Economics</li>
+                            <li>Agriculture</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LinkedIn Section -->
+    <div class="container">
+        <section class="linkedin-section">
+            <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" class="linkedin-link">CONNECT ON LINKEDIN</a>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">© 2025 Johannes Solibieda</p>
+    </footer>
 </body>
 </html>
