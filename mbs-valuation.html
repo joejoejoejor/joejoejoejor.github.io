@@ -467,13 +467,15 @@ valueMortgageNoPrepayment = mortgageTree(1,1);</div>
             <p class="content-text">
                 The prepayment option allows the mortgage pool to be refinanced at any point. At each node, the mortgage value is capped by the outstanding loan balance, representing the prepayment option being exercised:
             </p>
-            <div class="code-block">% Terminal values with prepayment constraint
+            <div class="code-block">% Initialize prepayment tree with terminal values
+mortgageTreeWithPrepayment = NaN(amortizationYears*12, amortizationYears*12);
 for c = 1:amortizationYears*12
     mortgageTreeWithPrepayment(end,c) = min(mortgage.outstandingOLB(end), ...
                                              mortgageTree(end,c));
 end
 
-% Backward induction with prepayment at each node
+% Backward induction with prepayment constraint at each node
+eend = amortizationYears*12 - 1;
 for d = 2:amortizationYears*12-1
     for e = 1:eend
         mortgageTreeWithPrepayment(end-d,e) = ...
@@ -481,6 +483,7 @@ for d = 2:amortizationYears*12-1
                 (0.5*mortgageTreeWithPrepayment(end-d+1,e) + ...
                  0.5*mortgageTreeWithPrepayment(end-d+1,e+1)) * ...
                  exp(-shortTree(end-d,e)*dt) + monthlyPayment);
+        eend = amortizationYears*12 - d;  % Update loop bound for tree structure
     end
 end
 
@@ -530,11 +533,19 @@ durationNoPrepayment = -1/shiftedTreeValues(1) * ((puNo - pdNo)/(ru - rd));</div
             <p class="content-text">
                 The implementation uses a second-order finite difference approximation:
             </p>
-            <div class="code-block">% Calculate durations at up and down nodes
+            <div class="code-block">% Extract rates and values from time step 3 for second-order derivatives
+ruu = shiftedTree(3,3);  % up-up state rate
+rud = shiftedTree(3,2);  % up-down state rate  
+rdd = shiftedTree(3,1);  % down-down state rate
+puuNo = shiftedTreeValues(5);  % price at up-up node
+pudNo = shiftedTreeValues(6);  % price at up-down node
+pddNo = shiftedTreeValues(7);  % price at down-down node
+
+% Calculate durations at up and down nodes
 DuNo = -1/puNo * ((puuNo - pudNo)/(ruu - rud));
 DdNo = -1/pdNo * ((pudNo - pddNo)/(rud - rdd));
 
-% Calculate convexity
+% Calculate convexity using second-order finite differences
 convexityNoPrepayment = durationNoPrepayment^2 - ((DuNo - DdNo)/(ru - rd));</div>
 
             <h3 class="subsection-title">Comparative Analysis</h3>
