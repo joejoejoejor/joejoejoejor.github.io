@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fixed Income: BDT Tree & MBS Valuation</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }
+h1, h2, h3 { color: #2c3e50; margin-top: 1.5em; }
+h1 { border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+.container { background: white; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.05); border-radius: 8px; }
+img { max-width: 100%; height: auto; display: block; margin: 20px auto; border: 1px solid #ddd; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 0.9em; }
+th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: left; }
+th { background-color: #f2f2f2; font-weight: bold; }
+.code-output { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 5px; font-family: "Consolas", monospace; overflow-x: auto; }
+.summary-box { background-color: #e8f4f8; border-left: 5px solid #3498db; padding: 15px; margin: 20px 0; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Fixed Income Assignment: BDT Short-Rate Tree & MBS Valuation</h1>
+<p><strong>Objective:</strong> Replicate the Black-Derman-Toy (BDT) short-rate tree model, estimate smooth yield/volatility term structures using the Nelson–Siegel model, and value a Mortgage-Backed Security (MBS) with prepayment options.</p>
+<h2>1. Estimating Yield and Volatility Term Structures (Nelson-Siegel)</h2>
+<div class="summary-box">The goal of this subtask was to apply the Nelson Siegel YIELD function to an incomplete set of market yields and volatilities. We construct a model where placeholder parameters are optimized using the <code>fminsearch</code> function to minimize the squared error between model and market data.</div>
+<p>We observe that the volatility curve fits very well, while the yield curve visually has larger residuals. This is a trade-off: using more complex smoothers might introduce overfitting.</p>
+<img src="visual2_curves.png" alt="Visual 2: Fitted Yield and Volatility Curves">
+<h2>2. Replicating the BDT Short-Rate Tree</h2>
+<div class="summary-box">We construct a short rate tree from the fitted bond prices and volatilities. The model price and volatility are calibrated using a loop where we minimize the difference between model-implied values and market data.</div>
+<p>The tree is fitted to the Nelson-Siegel interpolated estimates. As seen below (in log-scale), the short rate tree expands rapidly. However, extreme outcomes are unlikely in a 360-step binomial distribution and have limited impact on MBS pricing.</p>
+<img src="visual3_tree.png" alt="Visual 3: Log-Scaled Short Rate Tree">
+<h2>3. Valuation of Mortgage-Backed Security (30-Year)</h2>
+<div class="summary-box">We value a mortgage with a face value of 100M. For the mortgage with a prepayment option, the value is constrained: if the borrower can refinance cheaper, they will.</div>
+<h3>Initial Valuation Results</h3>
+<div class="code-output">
+Monthly Payment: 666676.9083<br>
+Value (No Prepayment): 102204316.7698<br>
+Value (With Prepayment): 90274841.8653<br>
+<strong>Option Value: 11929474.9045</strong>
+</div>
+<h2>4. Sensitivity Analysis: Duration and Convexity</h2>
+<p>We test the mortgage value under shifted short rate tree scenarios (scaling the fitted tree up or down). This reveals the "Negative Convexity" risk of MBS.</p>
+<img src="visual5_sens.png" alt="Visual 5: Value, Duration, Convexity">
+<div class="summary-box"><strong>Interpretation:</strong> Looking at the convexity (rightmost plot), we see a downwards spike for the MBS with prepayment options. This signifies "Negative Convexity." As rates fall, price appreciation is capped because borrowers refinance. As rates rise, the duration extends (borrowers hold onto cheap loans), increasing price sensitivity to further rate hikes.</div>
+</div>
+</body>
+</html>

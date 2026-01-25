@@ -1,3 +1,64 @@
+
+
+
+%% import data for the treasury yield curve
+%par vector contains, respectively, beta0, beta1, beta2, and tau
+yieldData=readtable('yieldAndVolatility2000.csv');
+
+% Set start parameters
+startPar = [1, 1, 1, 1];  % beta0 ~ level, beta1 ~ slope, beta2 ~ curvature, tau ~ 1 to 3 years
+
+
+%% Alias the error function with observed data and parameters.
+
+errorNelsonSiegelYield=@(par) (sum((yieldData.y-( ...
+    par(1)+ ...
+    (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4))- ...
+    par(3).*exp(-yieldData.m./par(4)) ...
+    )).^2));
+
+errorNelsonSiegelVol=@(par) (sum((yieldData.vol-( ...
+    par(1)+ ...
+    (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4))- ...
+    par(3).*exp(-yieldData.m./par(4)) ...
+    )).^2));
+
+%Run optimization
+[parMinYield,errorMinYield] = fminsearch(errorNelsonSiegelYield, startPar);
+[parMinVol,errorMinVol]   = fminsearch(errorNelsonSiegelVol, startPar);
+
+
+%% Alias new function fittedYield that takes as input some maturity m and 
+%returns fitted yields at the estimated parameters
+
+fittedFunctionYield= @(m) ( ...
+    parMinYield(1)+ ...
+    (parMinYield(2)+parMinYield(3)).*(1-exp(-m./parMinYield(4)))./(m./parMinYield(4))- ...
+    parMinYield(3).*exp(-m./parMinYield(4)) ...
+    );
+fittedFunctionVol= @(m) ( ...
+    parMinVol(1)+ ...
+    (parMinVol(2)+parMinVol(3)).*(1-exp(-m./parMinVol(4)))./(m./parMinVol(4))- ...
+    parMinVol(3).*exp(-m./parMinVol(4)) ...
+    );
+
+yieldData.nelsonSiegelYield= fittedFunctionYield(yieldData.m);
+yieldData.nelsonSiegelVol= fittedFunctionVol(yieldData.m);
+
+disp('======================================================================')
+disp('The fitted data table is:')
+disp(yieldData)
+
+
+%% plot the results
+subplot(2,1,1)
+plot(yieldData.m,yieldData.y,'*',yieldData.m,yieldData.nelsonSiegelYield);
+legend('Observed Yields','Nelson Siegel Fitted Yields')
+subplot(2,1,2)
+plot(yieldData.m,yieldData.vol,'*',yieldData.m,yieldData.nelsonSiegelVol);
+legend('Observed Vols','Nelson Siegel Fitted Vols')
+
+
 %% MBS Part (ii) a): Fit the BDT Tree
 
 % Import data
@@ -295,3 +356,87 @@ ylabel('Convexity');
 title('Convexity');
 legend('No Prepayment','With Prepayment','Location','best');
 
+%% Functions
+
+function [out] = bondTree(params,t,dt,shortTree)
+
+%bondTree function:
+%   builds a bond tree for given shorttree
+
+% construct the vector from params for the short tree start guesses
+shortRow=NaN(1,t+1);
+for i=1:t
+    shortRow(i)=params(1)*exp(2*(i-1)*params(2)*sqrt(dt));
+end
+
+
+
+% construct empty tree with last row all 1
+bTree=NaN(t+1,t+1);
+bTree(t+1,:)=1;
+
+% complete second last row with shortTreeT data
+for b=1:t 
+    bTree(t,b)=(0.5*bTree(t+1,b)+0.5*bTree(t+1, b+1))*exp(-shortRow(b)*dt);
+end
+
+% complete rest of rows with shortTree data
+for a=1:t-1 %row
+    r=t-a;
+    for b=1:r %column
+        bTree(r,b)=(0.5*bTree(r+1,b)+0.5*bTree(r+1,b+1))*exp(-shortTree(r,b)*dt);
+    end
+end
+
+
+outPrice=bTree(1,1);
+highyield=-1/dt*log(bTree(2,2));
+lowyield=-1/dt*log(bTree(2,1));
+outVol=1/(2*sqrt(dt))*log(highyield/lowyield);
+out=[outPrice,outVol];
+end
+
+function [out] = mortgageValue(amortizationYears,monthlyPayment,mortgage,shortTree, dt)
+
+%mortgageValue function:
+%   calculates the values of (non-)prepayment mortgages for given shortTree
+%   and mortgage data
+
+% Calculate value of non-prepayment mortgage
+mortgageTree=NaN(amortizationYears*12, amortizationYears*12);
+mortgageTree(end,:)=monthlyPayment*exp(-shortTree(end,:)*dt);
+for a=1:amortizationYears*12-1
+    for b=1:amortizationYears*12-1
+        mortgageTree(end-a,b)=(0.5*mortgageTree(end-a+1,b)+0.5*mortgageTree(end-a+1,b+1))*exp(-shortTree(end-a,b)*dt)+monthlyPayment;
+    end
+end
+mortgageTree(1,1)=(0.5*mortgageTree(2,1)+0.5*mortgageTree(2,2))*exp(-shortTree(1,1)*dt);
+valueMortgageNoPrepayment=mortgageTree(1,1);
+puNo=mortgageTree(2,2);
+pdNo=mortgageTree(2,1);
+puuNo=mortgageTree(3,3);
+pudNo=mortgageTree(3,2);
+pddNo=mortgageTree(3,1);
+
+% Calculate value of prepayment mortgage
+mortgageTreeWithPrepayment=NaN(amortizationYears*12, amortizationYears*12);
+for c=1:amortizationYears*12
+    mortgageTreeWithPrepayment(end,c)=min(mortgage.outstandingOLB(end),mortgageTree(end,c));
+end
+eend=amortizationYears*12-1;
+for d=2:amortizationYears*12-1
+    for e=1:eend
+        mortgageTreeWithPrepayment(end-d,e)=min(mortgage.outstandingOLB(end-d),(0.5*mortgageTreeWithPrepayment(end-d+1,e)+0.5*mortgageTreeWithPrepayment(end-d+1,e+1))*exp(-shortTree(end-d,e)*dt)+monthlyPayment);
+        eend=amortizationYears*12-d;
+    end
+end
+valueMortgageWithPrepayment=mortgageTreeWithPrepayment(1,1);
+
+puWith=mortgageTreeWithPrepayment(2,2);
+pdWith=mortgageTreeWithPrepayment(2,1);
+puuWith=mortgageTreeWithPrepayment(3,3);
+pudWith=mortgageTreeWithPrepayment(3,2);
+pddWith=mortgageTreeWithPrepayment(3,1);
+
+out=[valueMortgageNoPrepayment,valueMortgageWithPrepayment,puNo,pdNo,puuNo,pudNo,pddNo,puWith,pdWith,puuWith,pudWith,pddWith];
+end
