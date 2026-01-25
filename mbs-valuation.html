@@ -1,704 +1,1072 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valuing MBS Options - Johannes Solibieda</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Quantitative Finance: MBS Valuation using Nelson-Siegel &amp; BDT Tree</title>
+<meta name="generator" content="MATLAB 25.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2026-01-25">
+<meta name="DC.source" content="test1.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
-        body {
-            font-family: 'Cormorant', Georgia, 'Times New Roman', serif;
-            background-color: #ffffff;
-            color: #000000;
-            line-height: 1.6;
-        }
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
 
-        /* Navigation Bar */
-        nav {
-            background-color: #000000;
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
 
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-        }
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
 
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
 
-        .nav-links a:hover {
-            color: #ffffff;
-            opacity: 0.7;
-        }
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
 
-        /* Hero Section */
-        .hero {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 80px 0;
-            text-align: center;
-        }
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
 
-        .hero-title {
-            font-size: 4.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
-        .hero-subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
 
-        /* Main Content Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 60px;
-        }
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
 
-        /* Content Section */
-        .content-section {
-            padding: 60px 0;
-        }
 
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 30px;
-            letter-spacing: -0.5px;
-            border-bottom: 3px solid #000000;
-            padding-bottom: 15px;
-        }
 
-        .subsection-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #000000;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
 
-        .content-text {
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: #000000;
-            margin-bottom: 20px;
-        }
 
-        /* Code Block Styling */
-        .code-block {
-            background-color: #f5f5f5;
-            border-left: 4px solid #000000;
-            padding: 20px;
-            margin: 25px 0;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        /* Formula Block */
-        .formula-block {
-            background-color: #fafafa;
-            border: 1px solid #e0e0e0;
-            padding: 25px;
-            margin: 25px 0;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        /* Info Box */
-        .info-box {
-            background-color: #f9f9f9;
-            border: 2px solid #000000;
-            padding: 25px;
-            margin: 30px 0;
-        }
-
-        .info-box-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        /* List Styling */
-        ul {
-            margin-left: 30px;
-            margin-bottom: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 60px 0;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        .footer-text {
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 968px) {
-            .nav-container,
-            .container {
-                padding: 0 30px;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .subsection-title {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
-
-            .subsection-title {
-                font-size: 1.2rem;
-            }
-
-            .content-text {
-                font-size: 1rem;
-            }
-
-            .code-block {
-                font-size: 0.85rem;
-                padding: 15px;
-            }
-        }
-    </style>
+  </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo">Johannes Solibieda</a>
-            <ul class="nav-links">
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="projects.html">PROJECTS</a></li>
-            </ul>
-        </div>
-    </nav>
+<div class="content">
+<h1>Quantitative Finance: MBS Valuation using Nelson-Siegel &amp; BDT Tree</h1>
+<!--introduction-->
+<p>
+<b>Project Overview</b>
+</p>
+<p>The goal of this project is to estimate smooth yield and volatility term structures using the Nelson&ndash;Siegel model and to replicate a Black-Derman-Toy (BDT) short-rate tree. Finally, these models are used to value a Mortgage-Backed Security (MBS) with and without prepayment options.</p>
+<p>Both tasks involve nonlinear calibration using <tt>fminsearch()</tt> and observed market inputs. The general approach is to construct model-implied bond prices and fitted yield/volatilities to adjust model parameters until the model matches the data as closely as possible.</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">1. Estimating Yield and Volatility Term Structures (Nelson-Siegel)</a>
+</li>
+<li>
+<a href="#2">2. Calibrating the BDT Short Rate Tree</a>
+</li>
+<li>
+<a href="#3">3. Valuing a 30-Year Mortgage-Backed Security (MBS)</a>
+</li>
+<li>
+<a href="#4">4. Duration and Convexity Analysis</a>
+</li>
+<li>
+<a href="#5">Summary of Findings</a>
+</li>
+<li>
+<a href="#6">Model Limitations and Possible Enhancements</a>
+</li>
+<li>
+<a href="#7">Helper Functions</a>
+</li>
+</ul>
+</div>
+<h2 id="1">1. Estimating Yield and Volatility Term Structures (Nelson-Siegel)</h2>
+<p>The idea of this subtask is to apply the Nelson-Siegel function to an incomplete (in terms of maturities) set of market yields and volatilities. This prepares the data needed to create a short rate tree.</p>
+<p>The Nelson-Siegel model defines the yield curve <img src="projectMBS /html/test1_eq00384752939285451007.png" alt="$y(\tau)$" style="width:23px;height:14px;"> as:</p>
+<p>
+<img src="projectMBS /html/test1_eq10598821649972864043.png" alt="$y(\tau) = \beta_0 + \beta_1 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} \right) + \beta_2 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} - e^{-\lambda \tau} \right)$" style="width:287px;height:37px;"></p>
+<p>
+<b>Interpretation:</b> In the first step, a squared error function was set up to calculate the residual of true and fitted values. We optimize the parameters <img src="projectMBS /html/test1_eq08892760791975262576.png" alt="$\beta_0, \beta_1, \beta_2, \lambda$" style="width:65px;height:14px;"> to minimize this error for both Yield and Volatility.</p>
+<pre class="codeinput">
+<span class="comment">% --- Import Data ---</span>
+<span class="comment">% par vector contains: beta0, beta1, beta2, and tau (lambda)</span>
+yieldData = readtable(<span class="string">'yieldAndVolatility2000.csv'</span>);
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">Valuing MBS Options</h1>
-            <p class="hero-subtitle">A Quantitative Analysis of Mortgage-Backed Securities with Prepayment Features</p>
-        </div>
-    </section>
+<span class="comment">% --- Optimization Setup ---</span>
+startPar = [1, 1, 1, 1];
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Overview Section -->
-        <section class="content-section">
-            <h2 class="section-title">Overview</h2>
-            <p class="content-text">
-                This project performs a comprehensive valuation of Mortgage-Backed Securities (MBS) and analyzes the impact of prepayment options on their value, duration, and convexity. The analysis employs interest rate modeling through the Black-Derman-Toy (BDT) framework, calibrated using the Nelson-Siegel yield curve model.
-            </p>
-            <p class="content-text">
-                Mortgage-backed securities represent a pool of mortgage loans packaged together as tradable securities. A key feature of these instruments is the prepayment option held by homeowners, which introduces complexity in their valuation. When interest rates decline, homeowners are more likely to refinance their mortgages, effectively exercising an embedded call option that affects the MBS value and risk characteristics.
-            </p>
-            
-            <div class="info-box">
-                <div class="info-box-title">Key Components</div>
-                <ul>
-                    <li>Nelson-Siegel model for yield and volatility curve estimation</li>
-                    <li>Black-Derman-Toy (BDT) short rate tree construction</li>
-                    <li>MBS valuation with and without prepayment options</li>
-                    <li>Duration and convexity analysis under different interest rate scenarios</li>
-                    <li>Visualization of value, duration, and convexity sensitivity</li>
-                </ul>
-            </div>
-        </section>
+<span class="comment">% Error functions (Squared Error)</span>
+errorNelsonSiegelYield = @(par) (sum((yieldData.y - ( <span class="keyword">...</span>
+    par(1) + <span class="keyword">...</span>
+    (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4)) - <span class="keyword">...</span>
+    par(3).*exp(-yieldData.m./par(4)) <span class="keyword">...</span>
+    )).^2));
 
-        <!-- Nelson-Siegel Model Section -->
-        <section class="content-section">
-            <h2 class="section-title">Nelson-Siegel Model</h2>
-            <p class="content-text">
-                The Nelson-Siegel model provides a parsimonious and flexible framework for fitting the term structure of interest rates. The model represents yields as a function of maturity using four parameters that capture level, slope, and curvature characteristics of the yield curve.
-            </p>
-            
-            <h3 class="subsection-title">Model Specification</h3>
-            <p class="content-text">
-                The Nelson-Siegel model expresses yields and volatilities as:
-            </p>
-            <div class="formula-block">
-                $$Y(m) = \beta_0 + (\beta_1 + \beta_2)\frac{1-e^{-m/\tau}}{m/\tau} - \beta_2 e^{-m/\tau}$$
-            </div>
-            <p class="content-text">
-                Where:
-            </p>
-            <ul>
-                <li>\(\beta_0\) represents the long-term level of interest rates</li>
-                <li>\(\beta_1\) captures the slope of the yield curve</li>
-                <li>\(\beta_2\) controls the curvature (hump)</li>
-                <li>\(\tau\) determines the maturity at which the curvature effect is maximized</li>
-                <li>\(m\) is the time to maturity</li>
-            </ul>
+errorNelsonSiegelVol = @(par) (sum((yieldData.vol - ( <span class="keyword">...</span>
+    par(1) + <span class="keyword">...</span>
+    (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4)) - <span class="keyword">...</span>
+    par(3).*exp(-yieldData.m./par(4)) <span class="keyword">...</span>
+    )).^2));
 
-            <h3 class="subsection-title">Parameter Estimation</h3>
-            <p class="content-text">
-                The parameters are estimated by minimizing the sum of squared errors between observed and fitted values using MATLAB's <code>fminsearch</code> function. This approach is applied separately to both yield and volatility data.
-            </p>
-            <div class="code-block">% Define error function for yield fitting
+<span class="comment">% Run optimization</span>
+options = optimset(<span class="string">'Display'</span>, <span class="string">'off'</span>); <span class="comment">% Suppress fminsearch output</span>
+[parMinYield, ~] = fminsearch(errorNelsonSiegelYield, startPar, options);
+[parMinVol, ~]   = fminsearch(errorNelsonSiegelVol, startPar, options);
+
+<span class="comment">% --- Fit Results ---</span>
+fittedFunctionYield = @(m) ( <span class="keyword">...</span>
+    parMinYield(1) + <span class="keyword">...</span>
+    (parMinYield(2)+parMinYield(3)).*(1-exp(-m./parMinYield(4)))./(m./parMinYield(4)) - <span class="keyword">...</span>
+    parMinYield(3).*exp(-m./parMinYield(4)) <span class="keyword">...</span>
+    );
+
+fittedFunctionVol = @(m) ( <span class="keyword">...</span>
+    parMinVol(1) + <span class="keyword">...</span>
+    (parMinVol(2)+parMinVol(3)).*(1-exp(-m./parMinVol(4)))./(m./parMinVol(4)) - <span class="keyword">...</span>
+    parMinVol(3).*exp(-m./parMinVol(4)) <span class="keyword">...</span>
+    );
+
+<span class="comment">% Generate smooth curves for 30 years (360 months)</span>
+month = (1:360)';
+m_smooth = month./12;
+nelsonSiegelYields = fittedFunctionYield(m_smooth);
+nelsonSiegelVols = fittedFunctionVol(m_smooth);
+
+<span class="comment">% Store fitted data</span>
+fittedData = table(month, m_smooth, nelsonSiegelYields, nelsonSiegelVols, <span class="keyword">...</span>
+    <span class="string">'VariableNames'</span>, {<span class="string">'Month'</span>,<span class="string">'Maturity'</span>,<span class="string">'nelsonSiegelYield'</span>,<span class="string">'nelsonSiegelVol'</span>});
+
+<span class="comment">% Add fitted points to original data for comparison</span>
+yieldData.nelsonSiegelYield = fittedFunctionYield(yieldData.m);
+yieldData.nelsonSiegelVol = fittedFunctionVol(yieldData.m);
+
+<span class="comment">% --- Visualization ---</span>
+figure(<span class="string">'Position'</span>, [100, 100, 800, 600]);
+subplot(2,1,1)
+plot(yieldData.m, yieldData.y, <span class="string">'ko'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'k'</span>); hold <span class="string">on</span>;
+plot(m_smooth, nelsonSiegelYields, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 1.5);
+title(<span class="string">'Yield Curve Calibration'</span>);
+legend(<span class="string">'Observed Yields'</span>,<span class="string">'Nelson-Siegel Fit'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+grid <span class="string">on</span>; xlabel(<span class="string">'Maturity (Years)'</span>); ylabel(<span class="string">'Yield'</span>);
+
+subplot(2,1,2)
+plot(yieldData.m, yieldData.vol, <span class="string">'ko'</span>, <span class="string">'MarkerFaceColor'</span>, <span class="string">'k'</span>); hold <span class="string">on</span>;
+plot(m_smooth, nelsonSiegelVols, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 1.5);
+title(<span class="string">'Volatility Curve Calibration'</span>);
+legend(<span class="string">'Observed Vols'</span>,<span class="string">'Nelson-Siegel Fit'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+grid <span class="string">on</span>; xlabel(<span class="string">'Maturity (Years)'</span>); ylabel(<span class="string">'Volatility'</span>);
+
+<span class="comment">% *Observation:*</span>
+<span class="comment">% We see that the volatility curve fits very well, while the yield curve shows some deviations.</span>
+<span class="comment">% This is a trade-off: using more complex functions could improve the fit but might introduce overfitting.</span>
+</pre>
+<img vspace="5" hspace="5" src="projectMBS /html/test1_01.png" alt=""> <h2 id="2">2. Calibrating the BDT Short Rate Tree</h2>
+<p>The goal is to construct a 360-step short rate tree consistent with the smoothed market data. We use a binomial bond pricing model where model price and volatility must match the Nelson-Siegel inputs.</p>
+<p>
+<b>Calibration Logic:</b> 1. <b>First Node:</b> Solved using a simple search to match the short-term bond price. 2. <b>Subsequent Nodes:</b> We calibrate the base rate (<img src="projectMBS /html/test1_eq13826276409893519087.png" alt="$r_{d}$" style="width:11px;height:10px;">) and volatility parameter (<img src="projectMBS /html/test1_eq09992033592989221171.png" alt="$\sigma$" style="width:8px;height:7px;">) simultaneously. We construct a helper tree to find parameters such that the model price matches the market price.</p>
+<pre class="codeinput">
+<span class="comment">% --- Tree Initialization ---</span>
+T = fittedData.Maturity(end);
+N = fittedData.Month(end);
+dt = T/N;
+m_vec = (dt:dt:T)';
+
+<span class="comment">% Prepare target data from NS-Fit</span>
+observedData = table(m_vec);
+observedData.price = exp(-fittedData.nelsonSiegelYield .* fittedData.Maturity);
+observedData.volatility = fittedData.nelsonSiegelVol;
+
+<span class="comment">% Initialize Tree (NaNs)</span>
+shortTree = NaN(N,N);
+
+<span class="comment">% --- Step 1: First Node Calibration ---</span>
+i = 1;
+thisPrice = observedData.price(i);
+thisMaturity = m_vec(i);
+startR = 0.05;
+
+<span class="comment">% Objective: Match Zero Coupon Bond Price: P = exp(-r * dt)</span>
+thisError = @(r) (exp(-r * dt) - thisPrice)^2;
+thisR = fminsearch(thisError, startR, options);
+shortTree(i,1) = thisR;
+
+<span class="comment">% --- Step 2: Forward Induction Loop ---</span>
+startParam = [0.05, 0.1]; <span class="comment">% Initial guess for [rate, sigma]</span>
+thisParam = startParam;
+
+<span class="keyword">for</span> i = 2:N
+    thisPrice = observedData.price(i);
+    thisVolatility = observedData.volatility(i);
+    target = [thisPrice, thisVolatility];
+
+    <span class="comment">% Optimization to find [r_base, sigma] for this time step</span>
+    calibError = @(p) sum((target - bondTree(p, i, dt, shortTree)).^2);
+
+    thisParam = fminsearch(calibError, thisParam, options);
+
+    <span class="comment">% Populate the tree at step i</span>
+    thisBottomR = thisParam(1);
+    thisSigma = thisParam(2);
+
+    <span class="comment">% BDT relationship: r_{i,j} = r_{i,1} * exp(2 * sigma * (j-1) * sqrt(dt))</span>
+    <span class="comment">% (Note: Simplified BDT often uses this log-normal spacing)</span>
+    <span class="keyword">for</span> j = 1:i
+        shortTree(i,j) = thisBottomR * exp(2 * (j-1) * thisSigma * sqrt(dt));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% --- Visualization: The Short Rate Tree ---</span>
+figure(<span class="string">'Position'</span>, [100, 100, 800, 500]);
+hold <span class="string">on</span>;
+minRates = min(shortTree, [], 2, <span class="string">'omitnan'</span>);
+maxRates = max(shortTree, [], 2, <span class="string">'omitnan'</span>);
+
+<span class="comment">% Shade the range</span>
+x_fill = 1:N;
+fill([x_fill fliplr(x_fill)], [minRates' fliplr(maxRates')], <span class="keyword">...</span>
+     [0.9, 0.9, 0.95], <span class="string">'EdgeColor'</span>,<span class="string">'none'</span>);
+
+<span class="comment">% Plot bounds</span>
+plot(1:N, minRates, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 1.5);
+plot(1:N, maxRates, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 1.5);
+
+set(gca, <span class="string">'YScale'</span>, <span class="string">'log'</span>);
+xlabel(<span class="string">'Time Step (Months)'</span>); ylabel(<span class="string">'Short Rate (Log Scale)'</span>);
+title(<span class="string">'Calibrated BDT Short Rate Tree (Log Scale)'</span>);
+legend(<span class="string">'Tree Range'</span>, <span class="string">'Min Path'</span>, <span class="string">'Max Path'</span>, <span class="string">'Location'</span>, <span class="string">'best'</span>);
+grid <span class="string">on</span>; hold <span class="string">off</span>;
+
+<span class="comment">% *Observation:*</span>
+<span class="comment">% As seen in the log-scale plot, the tree expands significantly.</span>
+<span class="comment">% The most extreme outcomes (high interest rate and rate basically zero) are theoretically possible</span>
+<span class="comment">% but statistically unlikely given the binomial distribution.</span>
+</pre>
+<img vspace="5" hspace="5" src="projectMBS /html/test1_02.png" alt=""> <h2 id="3">3. Valuing a 30-Year Mortgage-Backed Security (MBS)</h2>
+<p>We now value a mortgage with a face value of 100M.</p>
+<div>
+<ul>
+<li>
+<b>No Prepayment:</b> The mortgages are without the option for prepayment. The cash flows are fixed. The value can exceed the OLB at time zero (100M) if rates drop, as the lender locks in high interest payments.</li>
+<li>
+<b>With Prepayment:</b> The borrower has the option for prepayment and therewith refinancing if rates drop. The value of the mortgage to the lender is capped because the borrower will pay off the loan when it is advantageous to them.</li>
+</ul>
+</div>
+<p>
+<img src="projectMBS /html/test1_eq09317544988425735217.png" alt="$$V_{prepay}(t) = \min( V_{continuation}, Principal_{outstanding})$$" style="width:274px;height:15px;"></p>
+<pre class="codeinput">
+<span class="comment">% --- Mortgage Specs ---</span>
+mortgageRate = 0.07; <span class="comment">% continuous</span>
+amortizationYears = 30;
+OlbZero = 100e6;
+
+<span class="comment">% Monthly Payment Calculation</span>
+monthlyRate = exp(mortgageRate/12) - 1;
+n_payments = amortizationYears * 12;
+monthlyPayment = OlbZero * (monthlyRate * (1+monthlyRate)^n_payments) / <span class="keyword">...</span>
+                 ((1+monthlyRate)^n_payments - 1);
+
+<span class="comment">% Generate Amortization Schedule</span>
+paymentsVector = ones(n_payments, 1) * monthlyPayment;
+mortgage = table(paymentsVector, NaN(n_payments,1), NaN(n_payments,1), NaN(n_payments,1), <span class="keyword">...</span>
+    <span class="string">'VariableNames'</span>, {<span class="string">'payment'</span>,<span class="string">'outstandingOLB'</span>,<span class="string">'interest'</span>, <span class="string">'principal'</span>});
+
+<span class="comment">% Initial period</span>
+mortgage.interest(1) = OlbZero * monthlyRate;
+mortgage.principal(1) = mortgage.payment(1) - mortgage.interest(1);
+mortgage.outstandingOLB(1) = OlbZero - mortgage.principal(1);
+
+<span class="comment">% Subsequent periods</span>
+<span class="keyword">for</span> i = 2:n_payments
+    mortgage.interest(i) = mortgage.outstandingOLB(i-1) * monthlyRate;
+    mortgage.principal(i) = mortgage.payment(i) - mortgage.interest(i);
+    mortgage.outstandingOLB(i) = mortgage.outstandingOLB(i-1) - mortgage.principal(i);
+<span class="keyword">end</span>
+
+<span class="comment">% --- Valuation ---</span>
+output = mortgageValue(amortizationYears, monthlyPayment, mortgage, shortTree, dt);
+val_NoPrepay = output(1);
+val_WithPrepay = output(2);
+optionValue = val_NoPrepay - val_WithPrepay;
+
+<span class="comment">% Display Results</span>
+fprintf(<span class="string">'&lt;strong&gt;MBS Valuation Results:&lt;/strong&gt;\n'</span>);
+fprintf(<span class="string">'Monthly Payment: $%.2f\n'</span>, monthlyPayment);
+fprintf(<span class="string">'Value (No Prepayment):   $%.2f\n'</span>, val_NoPrepay);
+fprintf(<span class="string">'Value (With Prepayment): $%.2f\n'</span>, val_WithPrepay);
+fprintf(<span class="string">'Value of Prepayment Option: $%.2f\n'</span>, optionValue);
+</pre>
+<pre class="codeoutput">&lt;strong&gt;MBS Valuation Results:&lt;/strong&gt;
+Monthly Payment: $666676.91
+Value (No Prepayment):   $101537649.15
+Value (With Prepayment): $90275407.46
+Value of Prepayment Option: $11262241.69
+</pre>
+<h2 id="4">4. Duration and Convexity Analysis</h2>
+<p>To understand risk, we shift the entire short rate tree up and down (by scaling it) and observe how the MBS price changes.</p>
+<div>
+<ul>
+<li>
+<b>Duration:</b> Sensitivity of price to rate changes.</li>
+<li>
+<b>Convexity:</b> Rate of change of duration.</li>
+</ul>
+</div>
+<p>We interpret the results as follows: * *No Prepayment:* Behaves like a standard bond (positive duration, positive convexity). * *With Prepayment:* Exhibits <b>negative convexity</b> in certain regions. As rates fall, price appreciation is limited (price compression) due to prepayment risk.</p>
+<pre class="codeinput">
+<span class="comment">% Values for range of shifted shortTrees</span>
+TreeMultiplierVector = (0.1:0.02:2)';
+n = numel(TreeMultiplierVector);
+interestDependentValues = table(TreeMultiplierVector, nan(n,1), nan(n,1), nan(n,1),nan(n,1),nan(n,1),nan(n,1),nan(n,1),<span class="string">'VariableNames'</span>, {<span class="string">'TreeMultiplier'</span>,<span class="string">'shortRateTreeStartingRate'</span>,<span class="string">'valueNoPrepayment'</span>,<span class="string">'valueWithPrepayment'</span>,<span class="string">'durationNoPrepayment'</span>,<span class="string">'durationWithPrepayment'</span>,<span class="string">'convexityNoPrepayment'</span>,<span class="string">'convexityWithPrepayment'</span>});
+
+<span class="keyword">for</span> k = 1:n
+    multiplier = interestDependentValues.TreeMultiplier(k);
+    <span class="comment">% calculate shifted tree</span>
+    shiftedTree = shortTree .* multiplier;
+    <span class="comment">% store starting short rate for this shifted tree</span>
+    interestDependentValues.shortRateTreeStartingRate(k) = shortTree(1,1) * multiplier;
+    <span class="comment">% evaluate mortgage values for the shifted tree</span>
+    shiftedTreeValues = mortgageValue(amortizationYears, monthlyPayment, mortgage, shiftedTree, dt);
+    interestDependentValues.valueNoPrepayment(k)   = shiftedTreeValues(1);
+    interestDependentValues.valueWithPrepayment(k) = shiftedTreeValues(2);
+
+    <span class="comment">%calculate duration and convexity</span>
+    ru=shiftedTree(2,2);
+    rd=shiftedTree(2,1);
+    ruu=shiftedTree(3,3);
+    rud=shiftedTree(3,2);
+    rdd=shiftedTree(3,1);
+    puNo=shiftedTreeValues(3);
+    pdNo=shiftedTreeValues(4);
+    puuNo=shiftedTreeValues(5);
+    pudNo=shiftedTreeValues(6);
+    pddNo=shiftedTreeValues(7);
+    puWith=shiftedTreeValues(8);
+    pdWith=shiftedTreeValues(9);
+    puuWith=shiftedTreeValues(10);
+    pudWith=shiftedTreeValues(11);
+    pddWith=shiftedTreeValues(12);
+
+    interestDependentValues.durationNoPrepayment(k)=-1/shiftedTreeValues(1)*((puNo-pdNo)/(ru-rd));
+    DuNo=-1/puNo*((puuNo-pudNo)/(ruu-rud));
+    DdNo=-1/pdNo*((pudNo-pddNo)/(rud-rdd));
+    interestDependentValues.convexityNoPrepayment(k)=interestDependentValues.durationNoPrepayment(k)^2-((DuNo-DdNo)/(ru-rd));
+    <span class="comment">% same for with prepayment mortgage</span>
+    interestDependentValues.durationWithPrepayment(k)=-1/shiftedTreeValues(1)*((puWith-pdWith)/(ru-rd));
+    DuWith=-1/puWith*((puuWith-pudWith)/(ruu-rud));
+    DdWith=-1/pdWith*((pudWith-pddWith)/(rud-rdd));
+    interestDependentValues.convexityWithPrepayment(k)=interestDependentValues.durationWithPrepayment(k)^2-((DuWith-DdWith)/(ru-rd));
+
+<span class="keyword">end</span>
+
+figure(<span class="string">'Position'</span>,[100 100 1400 400]);
+
+tiledlayout(1,3,<span class="string">'Padding'</span>,<span class="string">'compact'</span>,<span class="string">'TileSpacing'</span>,<span class="string">'compact'</span>);
+
+<span class="comment">% --- Plot 1: Value ---</span>
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.valueNoPrepayment, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+hold <span class="string">on</span>;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.valueWithPrepayment, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+grid <span class="string">on</span>;
+xlabel(<span class="string">'Starting Short Rate (r_{0,0})'</span>);
+ylabel(<span class="string">'MBS Value'</span>);
+title(<span class="string">'Value'</span>);
+legend(<span class="string">'No Prepayment'</span>,<span class="string">'With Prepayment'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+
+<span class="comment">% --- Plot 2: Duration ---</span>
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.durationNoPrepayment, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+hold <span class="string">on</span>;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.durationWithPrepayment, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+grid <span class="string">on</span>;
+xlabel(<span class="string">'Starting Short Rate (r_{0,0})'</span>);
+ylabel(<span class="string">'Duration'</span>);
+title(<span class="string">'Duration'</span>);
+legend(<span class="string">'No Prepayment'</span>,<span class="string">'With Prepayment'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+
+<span class="comment">% --- Plot 3: Convexity ---</span>
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.convexityNoPrepayment, <span class="string">'b-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+hold <span class="string">on</span>;
+plot(interestDependentValues.shortRateTreeStartingRate, <span class="keyword">...</span>
+     interestDependentValues.convexityWithPrepayment, <span class="string">'r-'</span>, <span class="string">'LineWidth'</span>, 1.8);
+grid <span class="string">on</span>;
+xlabel(<span class="string">'Starting Short Rate (r_{0,0})'</span>);
+ylabel(<span class="string">'Convexity'</span>);
+title(<span class="string">'Convexity'</span>);
+legend(<span class="string">'No Prepayment'</span>,<span class="string">'With Prepayment'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
+</pre>
+<img vspace="5" hspace="5" src="projectMBS /html/test1_03.png" alt=""> <h2 id="5">Summary of Findings</h2>
+<p>A central result of the MBS valuation is the distinctly different interest rate sensitivity of securities with and without a prepayment option. The most prominent feature of the MBS with prepayment is negative convexity as interest rates decline. When rates fall, borrowers have an incentive to refinance, which caps the upside potential of the security from the lender's perspective. Unlike a non-callable bond, whose price continues to rise as discount rates decrease, the value of a prepayable mortgage is bounded above by the outstanding principal. As a result, price appreciation slows and convexity turns negative in low-rate environments.</p>
+<p>A second important observation is the convergence of risk measures at high interest rate levels. As interest rates rise, prepayment becomes increasingly unlikely, rendering the embedded option effectively irrelevant. In this regime, the MBS with prepayment behaves similarly to the non-prepayable MBS, and both duration and convexity converge. This highlights the state-dependent nature of prepayment risk, which is most relevant in low to intermediate interest rate environments.</p>
+<p>The duration profiles further illustrate this asymmetry. The non-prepayable MBS exhibits a positive but decreasing duration, reflecting diminishing sensitivity as rates rise. In contrast, the duration of the prepayable MBS remains close to zero over a wide range of rising interest rates, indicating a high probability of early prepayment in favorable refinancing scenarios. Only at sufficiently high rates does duration begin to increase again, as prepayment is delayed or becomes unlikely. As rates rise further, the stabilizing effect of the prepayment option diminishes and the duration of both securities converges.</p>
+<p>From a risk perspective, the lower duration of the prepayable MBS reflects reduced upside potential rather than protection against downside risk. Investors forgo price appreciation in falling-rate environments and face reinvestment risk when prepayments occur, as principal must be reinvested at lower prevailing yields. This loss of upside should be compensated through higher mortgage rates or explicit option pricing.</p>
+<p>The convexity results support this interpretation. The pronounced downward spike in convexity for the prepayable MBS at intermediate interest rates reflects a region where duration changes rapidly. Small interest rate movements in this range significantly affect borrower behavior and expected cash flows, leading to heightened price sensitivity. This behavior is characteristic of mortgage-backed securities and distinguishes them from standard fixed-income instruments.</p>
+<h2 id="6">Model Limitations and Possible Enhancements</h2>
+<p>While the analysis captures the core economic mechanisms, several extensions could improve realism:</p>
+<div>
+<ol>
+<li>
+<b>Short-rate dynamics</b> The calibrated short-rate tree may generate extremely low or negative rates. In practice, negative rates are often constrained or behave differently. This could be addressed by imposing a lower bound or by using alternative models such as shifted Hull&ndash;White or shadow-rate frameworks.</li>
+<li>
+<b>Prepayment behavior</b> Prepayment is modeled as fully rational and instantaneous. Empirical evidence suggests that borrower behavior is often delayed or suboptimal due to transaction costs, credit constraints, and behavioral frictions. More realistic approaches use stochastic prepayment intensities or hazard-rate models that depend on interest rates, seasoning, and burnout effects (e.g., Stanton, 1995).</li>
+<li>
+<b>Yield curve modeling</b> The Nelson&ndash;Siegel model provides a parsimonious and smooth approximation of yields and volatilities, making it suitable for this application. However, it may lack flexibility in capturing complex curve shapes. Extensions such as the Nelson&ndash;Siegel&ndash;Svensson model or spline-based methods could improve fit quality at the cost of additional complexity.</li>
+</ol>
+</div>
+<h2 id="7">Helper Functions</h2>
+<p>These functions are used for calibration and valuation.</p>
+<pre class="codeinput">
+<span class="keyword">function</span> [out] = bondTree(params, t, dt, shortTree)
+    <span class="comment">% Builds a temporary bond tree to calibrate parameters at time t</span>
+    <span class="comment">% params: [base_rate, sigma]</span>
+
+    r_base = params(1);
+    sigma = params(2);
+
+    <span class="comment">% Construct rates for the current time step t</span>
+    currentRates = NaN(t, 1);
+    <span class="keyword">for</span> j = 1:t
+        currentRates(j) = r_base * exp(2 * (j-1) * sigma * sqrt(dt));
+    <span class="keyword">end</span>
+
+    <span class="comment">% Initialize Bond Tree at maturity (t+1)</span>
+    <span class="comment">% Value is 1 at maturity</span>
+    bTree = NaN(t+1, t+1);
+    bTree(t+1, :) = 1;
+
+    <span class="comment">% Backward induction for ONE step (from t+1 to t)</span>
+    <span class="comment">% We are pricing a bond that matures at t+1, seeing its price at time 0</span>
+
+    <span class="comment">% Step t</span>
+    <span class="keyword">for</span> b = 1:t
+       bTree(t,b) = (0.5 * bTree(t+1, b) + 0.5 * bTree(t+1, b+1)) * exp(-currentRates(b) * dt);
+    <span class="keyword">end</span>
+
+    <span class="comment">% Discount back to time 0 using the EXISTING shortTree</span>
+    <span class="keyword">for</span> step = t-1:-1:1
+        <span class="keyword">for</span> b = 1:step
+             rate = shortTree(step, b);
+             bTree(step, b) = (0.5 * bTree(step+1, b) + 0.5 * bTree(step+1, b+1)) * exp(-rate * dt);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    outPrice = bTree(1,1);
+
+    <span class="comment">% Calculate Implied Volatility (BDT specific metric)</span>
+    <span class="comment">% Using yields at step 2 to infer vol</span>
+    <span class="keyword">if</span> t &gt;= 2
+        <span class="comment">% This is a simplified proxy for BDT volatility matching</span>
+        <span class="comment">% Real BDT usually matches Cap prices or similar</span>
+        <span class="comment">% Here we use the log ratio of yields at step 2 if t allows, or just return price match</span>
+        <span class="comment">% For the loop structure in main code, we return [Price, Vol]</span>
+
+        <span class="comment">% Note: In the user's original logic, they calculated yields at node 2</span>
+        <span class="comment">% derived from the bond ending at t.</span>
+
+        <span class="comment">% Forward approximation of yields at step 2</span>
+        <span class="comment">% Re-simulate tree forward logic if needed, but here we stick to pricing</span>
+        <span class="comment">% To strictly follow original code's intent:</span>
+
+        highyield = -1/dt * log(bTree(2,2));
+        lowyield  = -1/dt * log(bTree(2,1));
+        outVol = 1/(2*sqrt(dt)) * log(highyield/lowyield);
+    <span class="keyword">else</span>
+        outVol = 0;
+    <span class="keyword">end</span>
+
+    out = [outPrice, outVol];
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [out] = mortgageValue(amortizationYears,monthlyPayment,mortgage,shortTree, dt)
+
+<span class="comment">%mortgageValue function:</span>
+<span class="comment">%   calculates the values of (non-)prepayment mortgages for given shortTree</span>
+<span class="comment">%   and mortgage data</span>
+
+<span class="comment">% Calculate value of non-prepayment mortgage</span>
+mortgageTree=NaN(amortizationYears*12, amortizationYears*12);
+mortgageTree(end,:)=monthlyPayment*exp(-shortTree(end,:)*dt);
+<span class="keyword">for</span> a=1:amortizationYears*12-1
+    <span class="keyword">for</span> b=1:amortizationYears*12-1
+        mortgageTree(end-a,b)=(0.5*mortgageTree(end-a+1,b)+0.5*mortgageTree(end-a+1,b+1))*exp(-shortTree(end-a,b)*dt)+monthlyPayment;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+mortgageTree(1,1)=(0.5*mortgageTree(2,1)+0.5*mortgageTree(2,2))*exp(-shortTree(1,1)*dt);
+valueMortgageNoPrepayment=mortgageTree(1,1);
+puNo=mortgageTree(2,2);
+pdNo=mortgageTree(2,1);
+puuNo=mortgageTree(3,3);
+pudNo=mortgageTree(3,2);
+pddNo=mortgageTree(3,1);
+
+
+
+<span class="comment">% Calculate value of prepayment mortgage</span>
+mortgageTreeWithPrepayment=NaN(amortizationYears*12, amortizationYears*12);
+<span class="keyword">for</span> c=1:amortizationYears*12
+    mortgageTreeWithPrepayment(end,c)=min(mortgage.outstandingOLB(end),mortgageTree(end,c));
+<span class="keyword">end</span>
+eend=amortizationYears*12-1;
+<span class="keyword">for</span> d=2:amortizationYears*12-1
+    <span class="keyword">for</span> e=1:eend
+        mortgageTreeWithPrepayment(end-d,e)=min(mortgage.outstandingOLB(end-d),(0.5*mortgageTreeWithPrepayment(end-d+1,e)+0.5*mortgageTreeWithPrepayment(end-d+1,e+1))*exp(-shortTree(end-d,e)*dt)+monthlyPayment);
+        eend=amortizationYears*12-d;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+valueMortgageWithPrepayment=mortgageTreeWithPrepayment(1,1);
+
+puWith=mortgageTreeWithPrepayment(2,2);
+pdWith=mortgageTreeWithPrepayment(2,1);
+puuWith=mortgageTreeWithPrepayment(3,3);
+pudWith=mortgageTreeWithPrepayment(3,2);
+pddWith=mortgageTreeWithPrepayment(3,1);
+
+out=[valueMortgageNoPrepayment,valueMortgageWithPrepayment,puNo,pdNo,puuNo,pudNo,pddNo,puWith,pdWith,puuWith,pudWith,pddWith];
+<span class="keyword">end</span>
+</pre>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Quantitative Finance: MBS Valuation using Nelson-Siegel & BDT Tree
+%
+% *Project Overview*
+%
+% The goal of this project is to estimate smooth yield and volatility term structures 
+% using the Nelson–Siegel model and to replicate a Black-Derman-Toy (BDT) short-rate tree. 
+% Finally, these models are used to value a Mortgage-Backed Security (MBS) with and without 
+% prepayment options.
+%
+% Both tasks involve nonlinear calibration using |fminsearch()| and observed market inputs. 
+% The general approach is to construct model-implied bond prices and fitted yield/volatilities 
+% to adjust model parameters until the model matches the data as closely as possible.
+
+
+%% 1. Estimating Yield and Volatility Term Structures (Nelson-Siegel)
+% The idea of this subtask is to apply the Nelson-Siegel function to an incomplete 
+% (in terms of maturities) set of market yields and volatilities. This prepares the data 
+% needed to create a short rate tree.
+%
+% The Nelson-Siegel model defines the yield curve $y(\tau)$ as:
+% 
+% $y(\tau) = \beta_0 + \beta_1 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} \right) + \beta_2 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} - e^{-\lambda \tau} \right)$
+%
+% *Interpretation:*
+% In the first step, a squared error function was set up to calculate the residual of true 
+% and fitted values. We optimize the parameters $\beta_0, \beta_1, \beta_2, \lambda$ 
+% to minimize this error for both Yield and Volatility.
+
+% REPLACE_WITH_DASH_DASH- Import Data REPLACE_WITH_DASH_DASH-
+% par vector contains: beta0, beta1, beta2, and tau (lambda)
+yieldData = readtable('yieldAndVolatility2000.csv');
+
+% REPLACE_WITH_DASH_DASH- Optimization Setup REPLACE_WITH_DASH_DASH-
+startPar = [1, 1, 1, 1]; 
+
+% Error functions (Squared Error)
 errorNelsonSiegelYield = @(par) (sum((yieldData.y - ( ...
     par(1) + ...
     (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4)) - ...
     par(3).*exp(-yieldData.m./par(4)) ...
     )).^2));
 
-% Optimize parameters
-[parMinYield, errorMinYield] = fminsearch(errorNelsonSiegelYield, startPar);
-
-% Similarly for volatility
 errorNelsonSiegelVol = @(par) (sum((yieldData.vol - ( ...
     par(1) + ...
     (par(2)+par(3)).*(1-exp(-yieldData.m./par(4)))./(yieldData.m./par(4)) - ...
     par(3).*exp(-yieldData.m./par(4)) ...
     )).^2));
 
-[parMinVol, errorMinVol] = fminsearch(errorNelsonSiegelVol, startPar);</div>
-            
-            <p class="content-text">
-                After parameter estimation, fitted yield and volatility functions can be evaluated at any maturity, providing smooth curves that interpolate between observed market data points. This enables us to obtain yields and volatilities for all 360 monthly periods needed for the MBS valuation.
-            </p>
-        </section>
+% Run optimization
+options = optimset('Display', 'off'); % Suppress fminsearch output
+[parMinYield, ~] = fminsearch(errorNelsonSiegelYield, startPar, options);
+[parMinVol, ~]   = fminsearch(errorNelsonSiegelVol, startPar, options);
 
-        <!-- Short Rate Tree Section -->
-        <section class="content-section">
-            <h2 class="section-title">Short Rate Tree Construction</h2>
-            <p class="content-text">
-                The interest rate dynamics are modeled using a binomial short rate tree in the Black-Derman-Toy framework. This recombining tree is calibrated to match both the observed zero-coupon bond prices (derived from yields) and the term structure of volatility.
-            </p>
+% REPLACE_WITH_DASH_DASH- Fit Results REPLACE_WITH_DASH_DASH-
+fittedFunctionYield = @(m) ( ...
+    parMinYield(1) + ...
+    (parMinYield(2)+parMinYield(3)).*(1-exp(-m./parMinYield(4)))./(m./parMinYield(4)) - ...
+    parMinYield(3).*exp(-m./parMinYield(4)) ...
+    );
 
-            <h3 class="subsection-title">Tree Calibration Methodology</h3>
-            <p class="content-text">
-                The short rate tree is constructed iteratively, step by step. At each time step, we solve for two parameters:
-            </p>
-            <ul>
-                <li>The lowest short rate at that time step</li>
-                <li>The volatility parameter that determines the spacing between rates</li>
-            </ul>
-            
-            <h3 class="subsection-title">Initial Node</h3>
-            <p class="content-text">
-                The first node is calibrated to match the observed price of a zero-coupon bond maturing at the first time step:
-            </p>
-            <div class="code-block">% Calibrate first node (no volatility matching needed)
+fittedFunctionVol = @(m) ( ...
+    parMinVol(1) + ...
+    (parMinVol(2)+parMinVol(3)).*(1-exp(-m./parMinVol(4)))./(m./parMinVol(4)) - ...
+    parMinVol(3).*exp(-m./parMinVol(4)) ...
+    );
+
+% Generate smooth curves for 30 years (360 months)
+month = (1:360)';
+m_smooth = month./12; 
+nelsonSiegelYields = fittedFunctionYield(m_smooth);
+nelsonSiegelVols = fittedFunctionVol(m_smooth);
+
+% Store fitted data
+fittedData = table(month, m_smooth, nelsonSiegelYields, nelsonSiegelVols, ...
+    'VariableNames', {'Month','Maturity','nelsonSiegelYield','nelsonSiegelVol'});
+
+% Add fitted points to original data for comparison
+yieldData.nelsonSiegelYield = fittedFunctionYield(yieldData.m);
+yieldData.nelsonSiegelVol = fittedFunctionVol(yieldData.m);
+
+% REPLACE_WITH_DASH_DASH- Visualization REPLACE_WITH_DASH_DASH-
+figure('Position', [100, 100, 800, 600]);
+subplot(2,1,1)
+plot(yieldData.m, yieldData.y, 'ko', 'MarkerFaceColor', 'k'); hold on;
+plot(m_smooth, nelsonSiegelYields, 'b-', 'LineWidth', 1.5);
+title('Yield Curve Calibration');
+legend('Observed Yields','Nelson-Siegel Fit','Location','best');
+grid on; xlabel('Maturity (Years)'); ylabel('Yield');
+
+subplot(2,1,2)
+plot(yieldData.m, yieldData.vol, 'ko', 'MarkerFaceColor', 'k'); hold on;
+plot(m_smooth, nelsonSiegelVols, 'r-', 'LineWidth', 1.5);
+title('Volatility Curve Calibration');
+legend('Observed Vols','Nelson-Siegel Fit','Location','best');
+grid on; xlabel('Maturity (Years)'); ylabel('Volatility');
+
+% *Observation:*
+% We see that the volatility curve fits very well, while the yield curve shows some deviations. 
+% This is a trade-off: using more complex functions could improve the fit but might introduce overfitting.
+
+%% 2. Calibrating the BDT Short Rate Tree
+% The goal is to construct a 360-step short rate tree consistent with the smoothed market data.
+% We use a binomial bond pricing model where model price and volatility must match the 
+% Nelson-Siegel inputs.
+%
+% *Calibration Logic:*
+% 1. *First Node:* Solved using a simple search to match the short-term bond price.
+% 2. *Subsequent Nodes:* We calibrate the base rate ($r_{d}$) and volatility parameter ($\sigma$)
+% simultaneously. We construct a helper tree to find parameters such that the model price 
+% matches the market price.
+
+% REPLACE_WITH_DASH_DASH- Tree Initialization REPLACE_WITH_DASH_DASH-
+T = fittedData.Maturity(end);
+N = fittedData.Month(end);
+dt = T/N;
+m_vec = (dt:dt:T)';
+
+% Prepare target data from NS-Fit
+observedData = table(m_vec);
+observedData.price = exp(-fittedData.nelsonSiegelYield .* fittedData.Maturity);
+observedData.volatility = fittedData.nelsonSiegelVol;
+
+% Initialize Tree (NaNs)
+shortTree = NaN(N,N);
+
+% REPLACE_WITH_DASH_DASH- Step 1: First Node Calibration REPLACE_WITH_DASH_DASH-
 i = 1;
 thisPrice = observedData.price(i);
-thisMaturity = observedData.m(i);
+thisMaturity = m_vec(i);
+startR = 0.05;
 
-% Error function: difference between model and market price
-thisError = @(r) (1*exp(-r*thisMaturity) - thisPrice)^2;
+% Objective: Match Zero Coupon Bond Price: P = exp(-r * dt)
+thisError = @(r) (exp(-r * dt) - thisPrice)^2;
+thisR = fminsearch(thisError, startR, options);
+shortTree(i,1) = thisR;
 
-% Find rate that minimizes error
-thisR = fminsearch(thisError, startR);
-shortTree(i,1) = thisR;</div>
+% REPLACE_WITH_DASH_DASH- Step 2: Forward Induction Loop REPLACE_WITH_DASH_DASH-
+startParam = [0.05, 0.1]; % Initial guess for [rate, sigma]
+thisParam = startParam;
 
-            <h3 class="subsection-title">Subsequent Nodes</h3>
-            <p class="content-text">
-                For subsequent time steps, both price and volatility matching are required. The tree structure follows:
-            </p>
-            <div class="formula-block">
-                $$r_{i,j} = r_{i,1} \cdot e^{2(j-1)\sigma\sqrt{\Delta t}}$$
-            </div>
-            <p class="content-text">
-                Where \(r_{i,j}\) is the short rate at time step \(i\) and node \(j\), and \(\sigma\) is the volatility parameter.
-            </p>
-            <div class="code-block">% Iterate through remaining time steps
 for i = 2:N
     thisPrice = observedData.price(i);
-    thisMaturity = observedData.m(i);
     thisVolatility = observedData.volatility(i);
+    target = [thisPrice, thisVolatility];
     
-    thisPriceAndVol = [thisPrice, thisVolatility];
+    % Optimization to find [r_base, sigma] for this time step
+    calibError = @(p) sum((target - bondTree(p, i, dt, shortTree)).^2);
     
-    % Minimize squared error in both price and volatility
-    thisError = @(params) sum((thisPriceAndVol - bondTree(params,i,dt,shortTree)).^2);
-    thisParam = fminsearch(thisError, startParam);
+    thisParam = fminsearch(calibError, thisParam, options);
     
-    % Build tree with optimized parameters
+    % Populate the tree at step i
     thisBottomR = thisParam(1);
     thisSigma = thisParam(2);
     
-    shortTree(i,1) = thisBottomR;
-    for j = 2:i
-        shortTree(i,j) = thisBottomR*exp(2*(j-1)*thisSigma*sqrt(dt));
+    % BDT relationship: r_{i,j} = r_{i,1} * exp(2 * sigma * (j-1) * sqrt(dt))
+    % (Note: Simplified BDT often uses this log-normal spacing)
+    for j = 1:i
+        shortTree(i,j) = thisBottomR * exp(2 * (j-1) * thisSigma * sqrt(dt));
     end
-end</div>
+end
 
-            <p class="content-text">
-                The <code>bondTree</code> function prices a zero-coupon bond using backward induction through the tree and calculates the implied volatility from the ratio of up and down state bond yields. This ensures simultaneous calibration to both price and volatility data.
-            </p>
-        </section>
+% REPLACE_WITH_DASH_DASH- Visualization: The Short Rate Tree REPLACE_WITH_DASH_DASH-
+figure('Position', [100, 100, 800, 500]);
+hold on;
+minRates = min(shortTree, [], 2, 'omitnan');
+maxRates = max(shortTree, [], 2, 'omitnan');
 
-        <!-- MBS Valuation Section -->
-        <section class="content-section">
-            <h2 class="section-title">MBS Valuation</h2>
-            <p class="content-text">
-                The mortgage-backed security is modeled as a portfolio of fixed monthly payments from a 30-year mortgage pool with an initial outstanding loan balance of $100 million and a continuous compounding rate of 7%.
-            </p>
+% Shade the range
+x_fill = 1:N;
+fill([x_fill fliplr(x_fill)], [minRates' fliplr(maxRates')], ...
+     [0.9, 0.9, 0.95], 'EdgeColor','none');
 
-            <h3 class="subsection-title">Mortgage Cash Flows</h3>
-            <p class="content-text">
-                The monthly payment is calculated using the standard annuity formula, converted to account for continuous compounding:
-            </p>
-            <div class="code-block">mortgageRate = 0.07;  % continuous compounding
+% Plot bounds
+plot(1:N, minRates, 'b-', 'LineWidth', 1.5);
+plot(1:N, maxRates, 'r-', 'LineWidth', 1.5);
+
+set(gca, 'YScale', 'log');
+xlabel('Time Step (Months)'); ylabel('Short Rate (Log Scale)');
+title('Calibrated BDT Short Rate Tree (Log Scale)');
+legend('Tree Range', 'Min Path', 'Max Path', 'Location', 'best');
+grid on; hold off;
+
+% *Observation:*
+% As seen in the log-scale plot, the tree expands significantly. 
+% The most extreme outcomes (high interest rate and rate basically zero) are theoretically possible 
+% but statistically unlikely given the binomial distribution.
+
+%% 3. Valuing a 30-Year Mortgage-Backed Security (MBS)
+% We now value a mortgage with a face value of 100M. 
+%
+% * *No Prepayment:* The mortgages are without the option for prepayment. 
+% The cash flows are fixed. The value can exceed the OLB at time zero (100M) 
+% if rates drop, as the lender locks in high interest payments.
+% * *With Prepayment:* The borrower has the option for prepayment and therewith refinancing if rates drop. 
+% The value of the mortgage to the lender is capped because the borrower will pay 
+% off the loan when it is advantageous to them.
+%
+% $$V_{prepay}(t) = \min( V_{continuation}, Principal_{outstanding})$$
+
+
+% REPLACE_WITH_DASH_DASH- Mortgage Specs REPLACE_WITH_DASH_DASH-
+mortgageRate = 0.07; % continuous
 amortizationYears = 30;
-OlbZero = 100000000;  % $100 million
+OlbZero = 100e6; 
 
-% Convert continuous rate to monthly
-monthlyRate = (exp(mortgageRate/12) - 1);
+% Monthly Payment Calculation
+monthlyRate = exp(mortgageRate/12) - 1; 
+n_payments = amortizationYears * 12;
+monthlyPayment = OlbZero * (monthlyRate * (1+monthlyRate)^n_payments) / ...
+                 ((1+monthlyRate)^n_payments - 1);
 
-% Calculate fixed monthly payment
-monthlyPayment = OlbZero * (monthlyRate*(1+monthlyRate)^(amortizationYears*12)) / ...
-                 ((1+monthlyRate)^(amortizationYears*12) - 1);</div>
+% Generate Amortization Schedule
+paymentsVector = ones(n_payments, 1) * monthlyPayment;
+mortgage = table(paymentsVector, NaN(n_payments,1), NaN(n_payments,1), NaN(n_payments,1), ...
+    'VariableNames', {'payment','outstandingOLB','interest', 'principal'});
 
-            <p class="content-text">
-                For each month, the payment is split between interest on the outstanding balance and principal repayment:
-            </p>
-            <div class="code-block">% Initialize first period
+% Initial period
 mortgage.interest(1) = OlbZero * monthlyRate;
 mortgage.principal(1) = mortgage.payment(1) - mortgage.interest(1);
 mortgage.outstandingOLB(1) = OlbZero - mortgage.principal(1);
 
-% Calculate for all subsequent months
-for i = 2:amortizationYears*12
+% Subsequent periods
+for i = 2:n_payments
     mortgage.interest(i) = mortgage.outstandingOLB(i-1) * monthlyRate;
     mortgage.principal(i) = mortgage.payment(i) - mortgage.interest(i);
     mortgage.outstandingOLB(i) = mortgage.outstandingOLB(i-1) - mortgage.principal(i);
-end</div>
-
-            <h3 class="subsection-title">Valuation Without Prepayment</h3>
-            <p class="content-text">
-                The base case values the MBS assuming no prepayment occurs. The value is calculated by backward induction through the short rate tree, discounting expected cash flows at each node:
-            </p>
-            <div class="code-block">% Initialize terminal nodes
-mortgageTree(end,:) = monthlyPayment * exp(-shortTree(end,:) * dt);
-
-% Backward induction
-for a = 1:amortizationYears*12-1
-    for b = 1:amortizationYears*12-1
-        mortgageTree(end-a,b) = (0.5*mortgageTree(end-a+1,b) + ...
-                                  0.5*mortgageTree(end-a+1,b+1)) * ...
-                                  exp(-shortTree(end-a,b)*dt) + monthlyPayment;
-    end
 end
 
-valueMortgageNoPrepayment = mortgageTree(1,1);</div>
+% REPLACE_WITH_DASH_DASH- Valuation REPLACE_WITH_DASH_DASH-
+output = mortgageValue(amortizationYears, monthlyPayment, mortgage, shortTree, dt);
+val_NoPrepay = output(1);
+val_WithPrepay = output(2);
+optionValue = val_NoPrepay - val_WithPrepay;
 
-            <h3 class="subsection-title">Valuation With Prepayment Option</h3>
-            <p class="content-text">
-                The prepayment option allows the mortgage pool to be refinanced at any point. At each node, the mortgage value is capped by the outstanding loan balance, representing the prepayment option being exercised:
-            </p>
-            <div class="code-block">% Initialize prepayment tree with terminal values
-mortgageTreeWithPrepayment = NaN(amortizationYears*12, amortizationYears*12);
-for c = 1:amortizationYears*12
-    mortgageTreeWithPrepayment(end,c) = min(mortgage.outstandingOLB(end), ...
-                                             mortgageTree(end,c));
-end
+% Display Results
+fprintf('<strong>MBS Valuation Results:</strong>\n');
+fprintf('Monthly Payment: $%.2f\n', monthlyPayment);
+fprintf('Value (No Prepayment):   $%.2f\n', val_NoPrepay);
+fprintf('Value (With Prepayment): $%.2f\n', val_WithPrepay);
+fprintf('Value of Prepayment Option: $%.2f\n', optionValue);
 
-% Backward induction with prepayment constraint at each node
-eend = amortizationYears*12 - 1;
-for d = 2:amortizationYears*12-1
-    for e = 1:eend
-        mortgageTreeWithPrepayment(end-d,e) = ...
-            min(mortgage.outstandingOLB(end-d), ...
-                (0.5*mortgageTreeWithPrepayment(end-d+1,e) + ...
-                 0.5*mortgageTreeWithPrepayment(end-d+1,e+1)) * ...
-                 exp(-shortTree(end-d,e)*dt) + monthlyPayment);
-        eend = amortizationYears*12 - d;  % Update loop bound for tree structure
-    end
-end
+%% 4. Duration and Convexity Analysis
+% To understand risk, we shift the entire short rate tree up and down (by scaling it) 
+% and observe how the MBS price changes.
+%
+% * *Duration:* Sensitivity of price to rate changes.
+% * *Convexity:* Rate of change of duration.
+%
+% We interpret the results as follows:
+% * *No Prepayment:* Behaves like a standard bond (positive duration, positive convexity).
+% * *With Prepayment:* Exhibits *negative convexity* in certain regions. As rates fall, 
+% price appreciation is limited (price compression) due to prepayment risk.
 
-valueMortgageWithPrepayment = mortgageTreeWithPrepayment(1,1);</div>
-
-            <p class="content-text">
-                The difference between these values represents the cost of the embedded prepayment option to the MBS holder:
-            </p>
-            <div class="formula-block">
-                $$\text{Option Value} = \text{Value}_{\text{no prepayment}} - \text{Value}_{\text{with prepayment}}$$
-            </div>
-        </section>
-
-        <!-- Duration and Convexity Section -->
-        <section class="content-section">
-            <h2 class="section-title">Duration and Convexity Analysis</h2>
-            <p class="content-text">
-                Duration and convexity measure the sensitivity of the MBS value to interest rate changes. These are computed by analyzing values at nearby nodes in the short rate tree.
-            </p>
-
-            <h3 class="subsection-title">Duration</h3>
-            <p class="content-text">
-                Duration measures the first-order sensitivity of price to interest rate changes:
-            </p>
-            <div class="formula-block">
-                $$D = -\frac{1}{P} \frac{\partial P}{\partial r}$$
-            </div>
-            <p class="content-text">
-                In the discrete tree framework, this is approximated using finite differences:
-            </p>
-            <div class="code-block">% Extract rates and values from tree nodes
-ru = shiftedTree(2,2);  % up state rate
-rd = shiftedTree(2,1);  % down state rate
-puNo = shiftedTreeValues(3);  % price in up state (no prepayment)
-pdNo = shiftedTreeValues(4);  % price in down state (no prepayment)
-
-% Calculate duration
-durationNoPrepayment = -1/shiftedTreeValues(1) * ((puNo - pdNo)/(ru - rd));</div>
-
-            <h3 class="subsection-title">Convexity</h3>
-            <p class="content-text">
-                Convexity captures the second-order sensitivity, measuring how duration itself changes with interest rates:
-            </p>
-            <div class="formula-block">
-                $$C = D^2 - \frac{1}{P}\frac{\partial^2 P}{\partial r^2}$$
-            </div>
-            <p class="content-text">
-                The implementation uses a second-order finite difference approximation:
-            </p>
-            <div class="code-block">% Extract rates and values from time step 3 for second-order derivatives
-ruu = shiftedTree(3,3);  % up-up state rate
-rud = shiftedTree(3,2);  % up-down state rate  
-rdd = shiftedTree(3,1);  % down-down state rate
-puuNo = shiftedTreeValues(5);  % price at up-up node
-pudNo = shiftedTreeValues(6);  % price at up-down node
-pddNo = shiftedTreeValues(7);  % price at down-down node
-
-% Calculate durations at up and down nodes
-DuNo = -1/puNo * ((puuNo - pudNo)/(ruu - rud));
-DdNo = -1/pdNo * ((pudNo - pddNo)/(rud - rdd));
-
-% Calculate convexity using second-order finite differences
-convexityNoPrepayment = durationNoPrepayment^2 - ((DuNo - DdNo)/(ru - rd));</div>
-
-            <h3 class="subsection-title">Comparative Analysis</h3>
-            <p class="content-text">
-                The analysis computes value, duration, and convexity across a range of interest rate scenarios by scaling the entire short rate tree. This reveals how the prepayment option affects risk characteristics:
-            </p>
-            <div class="code-block">% Analyze over range of tree multipliers
+% Values for range of shifted shortTrees
 TreeMultiplierVector = (0.1:0.02:2)';
+n = numel(TreeMultiplierVector);
+interestDependentValues = table(TreeMultiplierVector, nan(n,1), nan(n,1), nan(n,1),nan(n,1),nan(n,1),nan(n,1),nan(n,1),'VariableNames', {'TreeMultiplier','shortRateTreeStartingRate','valueNoPrepayment','valueWithPrepayment','durationNoPrepayment','durationWithPrepayment','convexityNoPrepayment','convexityWithPrepayment'});
 
 for k = 1:n
-    multiplier = TreeMultiplierVector(k);
+    multiplier = interestDependentValues.TreeMultiplier(k);
+    % calculate shifted tree
     shiftedTree = shortTree .* multiplier;
-    
-    % Calculate MBS values, duration, and convexity
-    shiftedTreeValues = mortgageValue(amortizationYears, monthlyPayment, ...
-                                      mortgage, shiftedTree, dt);
-    
-    % Store results for both prepayment cases
-    interestDependentValues.valueNoPrepayment(k) = shiftedTreeValues(1);
+    % store starting short rate for this shifted tree
+    interestDependentValues.shortRateTreeStartingRate(k) = shortTree(1,1) * multiplier;
+    % evaluate mortgage values for the shifted tree
+    shiftedTreeValues = mortgageValue(amortizationYears, monthlyPayment, mortgage, shiftedTree, dt);
+    interestDependentValues.valueNoPrepayment(k)   = shiftedTreeValues(1);
     interestDependentValues.valueWithPrepayment(k) = shiftedTreeValues(2);
-    % ... duration and convexity calculations ...
-end</div>
+    
+    %calculate duration and convexity
+    ru=shiftedTree(2,2);
+    rd=shiftedTree(2,1);
+    ruu=shiftedTree(3,3);
+    rud=shiftedTree(3,2);
+    rdd=shiftedTree(3,1);
+    puNo=shiftedTreeValues(3);
+    pdNo=shiftedTreeValues(4);
+    puuNo=shiftedTreeValues(5);
+    pudNo=shiftedTreeValues(6);
+    pddNo=shiftedTreeValues(7);
+    puWith=shiftedTreeValues(8);
+    pdWith=shiftedTreeValues(9);
+    puuWith=shiftedTreeValues(10);
+    pudWith=shiftedTreeValues(11);
+    pddWith=shiftedTreeValues(12);
 
-            <div class="info-box">
-                <div class="info-box-title">Key Insights</div>
-                <ul>
-                    <li><strong>Negative Convexity:</strong> MBS with prepayment typically exhibit negative convexity at low interest rates, where prepayment is most likely. This means duration increases as rates rise (opposite of standard bonds).</li>
-                    <li><strong>Duration Reduction:</strong> The prepayment option generally reduces effective duration compared to non-prepayable mortgages, especially in low-rate environments.</li>
-                    <li><strong>Value Impact:</strong> The prepayment option always reduces MBS value from the investor's perspective, with the impact most pronounced when rates are low.</li>
-                </ul>
-            </div>
-        </section>
+    interestDependentValues.durationNoPrepayment(k)=-1/shiftedTreeValues(1)*((puNo-pdNo)/(ru-rd));
+    DuNo=-1/puNo*((puuNo-pudNo)/(ruu-rud));
+    DdNo=-1/pdNo*((pudNo-pddNo)/(rud-rdd));
+    interestDependentValues.convexityNoPrepayment(k)=interestDependentValues.durationNoPrepayment(k)^2-((DuNo-DdNo)/(ru-rd));
+    % same for with prepayment mortgage
+    interestDependentValues.durationWithPrepayment(k)=-1/shiftedTreeValues(1)*((puWith-pdWith)/(ru-rd));
+    DuWith=-1/puWith*((puuWith-pudWith)/(ruu-rud));
+    DdWith=-1/pdWith*((pudWith-pddWith)/(rud-rdd));
+    interestDependentValues.convexityWithPrepayment(k)=interestDependentValues.durationWithPrepayment(k)^2-((DuWith-DdWith)/(ru-rd));
+    
+end
 
-        <!-- Implementation Details Section -->
-        <section class="content-section">
-            <h2 class="section-title">Implementation Details</h2>
-            
-            <h3 class="subsection-title">MATLAB Files</h3>
-            <p class="content-text">
-                The project consists of several MATLAB files working together:
-            </p>
-            <ul>
-                <li><code>MBS_PartII_Johannes.m</code> - Main script orchestrating the analysis</li>
-                <li><code>nelsonSiegel_MBS_Johannes.m</code> - Nelson-Siegel model fitting and visualization</li>
-                <li><code>shortTree_Replication_Johannes.m</code> - Short rate tree construction demonstration</li>
-                <li><code>bondTree.m</code> - Function to price bonds and calculate implied volatility from tree parameters</li>
-                <li><code>mortgageValue.m</code> - Function to value MBS with and without prepayment</li>
-            </ul>
+figure('Position',[100 100 1400 400]);
 
-            <h3 class="subsection-title">Data Requirements</h3>
-            <p class="content-text">
-                The analysis requires:
-            </p>
-            <ul>
-                <li><code>yieldAndVolatility2000.csv</code> - Market data containing observed yields and volatilities at various maturities</li>
-            </ul>
+tiledlayout(1,3,'Padding','compact','TileSpacing','compact');
 
-            <h3 class="subsection-title">Visualization</h3>
-            <p class="content-text">
-                The main script generates comprehensive visualizations including:
-            </p>
-            <ul>
-                <li>Short rate tree structure with minimum and maximum rate paths (log scale)</li>
-                <li>Three-panel comparison of Value, Duration, and Convexity vs. Starting Short Rate</li>
-                <li>Separate curves for MBS with and without prepayment options</li>
-            </ul>
-        </section>
+% REPLACE_WITH_DASH_DASH- Plot 1: Value REPLACE_WITH_DASH_DASH-
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.valueNoPrepayment, 'b-', 'LineWidth', 1.8);
+hold on;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.valueWithPrepayment, 'r-', 'LineWidth', 1.8);
+grid on;
+xlabel('Starting Short Rate (r_{0,0})');
+ylabel('MBS Value');
+title('Value');
+legend('No Prepayment','With Prepayment','Location','best');
 
-        <!-- Results and Interpretation Section -->
-        <section class="content-section">
-            <h2 class="section-title">Results and Interpretation</h2>
-            
-            <h3 class="subsection-title">Theoretical Framework</h3>
-            <p class="content-text">
-                The prepayment option can be understood as a call option on the mortgage pool held by the borrowers. When interest rates fall below the mortgage rate, refinancing becomes economically attractive. This creates asymmetric risk profiles:
-            </p>
-            <ul>
-                <li><strong>Rising Rates:</strong> Prepayment slows, extending effective duration</li>
-                <li><strong>Falling Rates:</strong> Prepayment accelerates, shortening effective duration and capping price appreciation</li>
-            </ul>
+% REPLACE_WITH_DASH_DASH- Plot 2: Duration REPLACE_WITH_DASH_DASH-
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.durationNoPrepayment, 'b-', 'LineWidth', 1.8);
+hold on;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.durationWithPrepayment, 'r-', 'LineWidth', 1.8);
+grid on;
+xlabel('Starting Short Rate (r_{0,0})');
+ylabel('Duration');
+title('Duration');
+legend('No Prepayment','With Prepayment','Location','best');
 
-            <h3 class="subsection-title">Practical Implications</h3>
-            <div class="info-box">
-                <div class="info-box-title">Investment Considerations</div>
-                <ul>
-                    <li><strong>Yield Enhancement:</strong> MBS typically offer higher yields than comparable Treasury securities to compensate for prepayment risk and negative convexity</li>
-                    <li><strong>Interest Rate Views:</strong> MBS are most attractive when rates are expected to remain stable or rise moderately</li>
-                    <li><strong>Portfolio Role:</strong> Duration and convexity characteristics differ substantially from traditional fixed-income securities</li>
-                    <li><strong>Risk Management:</strong> Hedging strategies must account for changing duration as rates move</li>
-                </ul>
-            </div>
+% REPLACE_WITH_DASH_DASH- Plot 3: Convexity REPLACE_WITH_DASH_DASH-
+nexttile;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.convexityNoPrepayment, 'b-', 'LineWidth', 1.8);
+hold on;
+plot(interestDependentValues.shortRateTreeStartingRate, ...
+     interestDependentValues.convexityWithPrepayment, 'r-', 'LineWidth', 1.8);
+grid on;
+xlabel('Starting Short Rate (r_{0,0})');
+ylabel('Convexity');
+title('Convexity');
+legend('No Prepayment','With Prepayment','Location','best');
 
-            <h3 class="subsection-title">Model Limitations</h3>
-            <p class="content-text">
-                This analysis makes several simplifying assumptions:
-            </p>
-            <ul>
-                <li>Deterministic prepayment behavior (exercised whenever economically rational)</li>
-                <li>No transaction costs or refinancing delays</li>
-                <li>Single-factor interest rate model</li>
-                <li>No credit risk considerations</li>
-                <li>Homogeneous mortgage pool characteristics</li>
-            </ul>
-            <p class="content-text">
-                More sophisticated models might incorporate:
-            </p>
-            <ul>
-                <li>Behavioral prepayment models (e.g., PSA curves)</li>
-                <li>Multiple interest rate factors</li>
-                <li>Credit risk and defaults</li>
-                <li>Heterogeneous mortgage pools with different characteristics</li>
-                <li>Servicing fees and other costs</li>
-            </ul>
-        </section>
 
-        <!-- References Section -->
-        <section class="content-section">
-            <h2 class="section-title">References and Further Reading</h2>
-            <p class="content-text">
-                This analysis draws on concepts from fixed income theory and interest rate modeling:
-            </p>
-            <ul>
-                <li>Black, F., Derman, E., & Toy, W. (1990). "A One-Factor Model of Interest Rates and Its Application to Treasury Bond Options"</li>
-                <li>Nelson, C. R., & Siegel, A. F. (1987). "Parsimonious Modeling of Yield Curves"</li>
-                <li>Fabozzi, F. J. "The Handbook of Mortgage-Backed Securities"</li>
-            </ul>
-            
-            <p class="content-text">
-                For complete documentation and assignment context, see:
-            </p>
-            <ul>
-                <li>MBS Assignment Summary (PDF/DOCX) in the project repository</li>
-            </ul>
-        </section>
 
-        <!-- Conclusion Section -->
-        <section class="content-section">
-            <h2 class="section-title">Conclusion</h2>
-            <p class="content-text">
-                This project demonstrates a complete framework for valuing mortgage-backed securities with embedded prepayment options. By combining term structure modeling (Nelson-Siegel), interest rate dynamics (BDT tree), and option pricing techniques, we can quantify the value and risk characteristics of these complex instruments.
-            </p>
-            <p class="content-text">
-                The analysis reveals how prepayment options fundamentally alter the risk profile of mortgage-backed securities, introducing negative convexity and path-dependent duration. These characteristics make MBS valuation more complex than standard fixed-income securities but also create opportunities for investors who understand and can manage these risks.
-            </p>
-            <p class="content-text">
-                The MATLAB implementation provides a practical tool for exploring these dynamics across different interest rate scenarios, making it valuable for both educational purposes and real-world analysis.
-            </p>
-        </section>
-    </div>
 
-    <!-- Footer -->
-    <footer>
-        <p class="footer-text">© 2025 Johannes Solibieda | <a href="https://github.com/joejoejoejor/joejoejoejor.github.io" style="color: #ffffff; text-decoration: underline;">View Source Code</a></p>
-    </footer>
+%% Summary of Findings
+%
+% A central result of the MBS valuation is the distinctly different interest rate sensitivity of securities with and without a prepayment option. 
+% The most prominent feature of the MBS with prepayment is negative convexity as interest rates decline. 
+% When rates fall, borrowers have an incentive to refinance, which caps the upside potential of the security from the lender's perspective. 
+% Unlike a non-callable bond, whose price continues to rise as discount rates decrease, the value of a prepayable mortgage is bounded above by the outstanding principal. 
+% As a result, price appreciation slows and convexity turns negative in low-rate environments.
+%
+% A second important observation is the convergence of risk measures at high interest rate levels. 
+% As interest rates rise, prepayment becomes increasingly unlikely, rendering the embedded option effectively irrelevant. 
+% In this regime, the MBS with prepayment behaves similarly to the non-prepayable MBS, and both duration and convexity converge. 
+% This highlights the state-dependent nature of prepayment risk, which is most relevant in low to intermediate interest rate environments.
+%
+% The duration profiles further illustrate this asymmetry. 
+% The non-prepayable MBS exhibits a positive but decreasing duration, reflecting diminishing sensitivity as rates rise. 
+% In contrast, the duration of the prepayable MBS remains close to zero over a wide range of rising interest rates, indicating a high probability of early prepayment in favorable refinancing scenarios. 
+% Only at sufficiently high rates does duration begin to increase again, as prepayment is delayed or becomes unlikely. 
+% As rates rise further, the stabilizing effect of the prepayment option diminishes and the duration of both securities converges.
+%
+% From a risk perspective, the lower duration of the prepayable MBS reflects reduced upside potential rather than protection against downside risk. 
+% Investors forgo price appreciation in falling-rate environments and face reinvestment risk when prepayments occur, as principal must be reinvested at lower prevailing yields. 
+% This loss of upside should be compensated through higher mortgage rates or explicit option pricing.
+%
+% The convexity results support this interpretation. 
+% The pronounced downward spike in convexity for the prepayable MBS at intermediate interest rates reflects a region where duration changes rapidly. 
+% Small interest rate movements in this range significantly affect borrower behavior and expected cash flows, leading to heightened price sensitivity. 
+% This behavior is characteristic of mortgage-backed securities and distinguishes them from standard fixed-income instruments.
+
+%% Model Limitations and Possible Enhancements
+% While the analysis captures the core economic mechanisms, several extensions could improve realism:
+% 
+% # *Short-rate dynamics* 
+% The calibrated short-rate tree may generate extremely low or negative rates. 
+% In practice, negative rates are often constrained or behave differently. 
+% This could be addressed by imposing a lower bound or by using alternative models such as shifted Hull–White or shadow-rate frameworks.
+% # *Prepayment behavior*
+% Prepayment is modeled as fully rational and instantaneous. 
+% Empirical evidence suggests that borrower behavior is often delayed or suboptimal due to transaction costs, credit constraints, and behavioral frictions. 
+% More realistic approaches use stochastic prepayment intensities or hazard-rate models that depend on interest rates, seasoning, and burnout effects (e.g., Stanton, 1995).
+% # *Yield curve modeling*
+% The Nelson–Siegel model provides a parsimonious and smooth approximation of yields and volatilities, making it suitable for this application. 
+% However, it may lack flexibility in capturing complex curve shapes. 
+% Extensions such as the Nelson–Siegel–Svensson model or spline-based methods could improve fit quality at the cost of additional complexity.
+
+%% Helper Functions
+% These functions are used for calibration and valuation.
+
+function [out] = bondTree(params, t, dt, shortTree)
+    % Builds a temporary bond tree to calibrate parameters at time t
+    % params: [base_rate, sigma]
+    
+    r_base = params(1);
+    sigma = params(2);
+    
+    % Construct rates for the current time step t
+    currentRates = NaN(t, 1);
+    for j = 1:t
+        currentRates(j) = r_base * exp(2 * (j-1) * sigma * sqrt(dt));
+    end
+    
+    % Initialize Bond Tree at maturity (t+1)
+    % Value is 1 at maturity
+    bTree = NaN(t+1, t+1);
+    bTree(t+1, :) = 1;
+    
+    % Backward induction for ONE step (from t+1 to t)
+    % We are pricing a bond that matures at t+1, seeing its price at time 0
+    
+    % Step t
+    for b = 1:t
+       bTree(t,b) = (0.5 * bTree(t+1, b) + 0.5 * bTree(t+1, b+1)) * exp(-currentRates(b) * dt);
+    end
+    
+    % Discount back to time 0 using the EXISTING shortTree
+    for step = t-1:-1:1
+        for b = 1:step
+             rate = shortTree(step, b);
+             bTree(step, b) = (0.5 * bTree(step+1, b) + 0.5 * bTree(step+1, b+1)) * exp(-rate * dt);
+        end
+    end
+    
+    outPrice = bTree(1,1);
+    
+    % Calculate Implied Volatility (BDT specific metric)
+    % Using yields at step 2 to infer vol
+    if t >= 2
+        % This is a simplified proxy for BDT volatility matching
+        % Real BDT usually matches Cap prices or similar
+        % Here we use the log ratio of yields at step 2 if t allows, or just return price match
+        % For the loop structure in main code, we return [Price, Vol]
+        
+        % Note: In the user's original logic, they calculated yields at node 2 
+        % derived from the bond ending at t.
+        
+        % Forward approximation of yields at step 2
+        % Re-simulate tree forward logic if needed, but here we stick to pricing
+        % To strictly follow original code's intent:
+        
+        highyield = -1/dt * log(bTree(2,2));
+        lowyield  = -1/dt * log(bTree(2,1));
+        outVol = 1/(2*sqrt(dt)) * log(highyield/lowyield);
+    else
+        outVol = 0;
+    end
+    
+    out = [outPrice, outVol];
+end
+
+function [out] = mortgageValue(amortizationYears,monthlyPayment,mortgage,shortTree, dt)
+
+%mortgageValue function:
+%   calculates the values of (non-)prepayment mortgages for given shortTree
+%   and mortgage data
+
+% Calculate value of non-prepayment mortgage
+mortgageTree=NaN(amortizationYears*12, amortizationYears*12);
+mortgageTree(end,:)=monthlyPayment*exp(-shortTree(end,:)*dt);
+for a=1:amortizationYears*12-1
+    for b=1:amortizationYears*12-1
+        mortgageTree(end-a,b)=(0.5*mortgageTree(end-a+1,b)+0.5*mortgageTree(end-a+1,b+1))*exp(-shortTree(end-a,b)*dt)+monthlyPayment;
+    end
+end
+mortgageTree(1,1)=(0.5*mortgageTree(2,1)+0.5*mortgageTree(2,2))*exp(-shortTree(1,1)*dt);
+valueMortgageNoPrepayment=mortgageTree(1,1);
+puNo=mortgageTree(2,2);
+pdNo=mortgageTree(2,1);
+puuNo=mortgageTree(3,3);
+pudNo=mortgageTree(3,2);
+pddNo=mortgageTree(3,1);
+
+
+
+% Calculate value of prepayment mortgage
+mortgageTreeWithPrepayment=NaN(amortizationYears*12, amortizationYears*12);
+for c=1:amortizationYears*12
+    mortgageTreeWithPrepayment(end,c)=min(mortgage.outstandingOLB(end),mortgageTree(end,c));
+end
+eend=amortizationYears*12-1;
+for d=2:amortizationYears*12-1
+    for e=1:eend
+        mortgageTreeWithPrepayment(end-d,e)=min(mortgage.outstandingOLB(end-d),(0.5*mortgageTreeWithPrepayment(end-d+1,e)+0.5*mortgageTreeWithPrepayment(end-d+1,e+1))*exp(-shortTree(end-d,e)*dt)+monthlyPayment);
+        eend=amortizationYears*12-d;
+    end
+end
+valueMortgageWithPrepayment=mortgageTreeWithPrepayment(1,1);
+
+puWith=mortgageTreeWithPrepayment(2,2);
+pdWith=mortgageTreeWithPrepayment(2,1);
+puuWith=mortgageTreeWithPrepayment(3,3);
+pudWith=mortgageTreeWithPrepayment(3,2);
+pddWith=mortgageTreeWithPrepayment(3,1);
+
+out=[valueMortgageNoPrepayment,valueMortgageWithPrepayment,puNo,pdNo,puuNo,pudNo,pddNo,puWith,pdWith,puuWith,pudWith,pddWith];
+end
+##### SOURCE END #####
+-->
 </body>
 </html>
