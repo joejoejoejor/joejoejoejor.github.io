@@ -112,11 +112,11 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </div>
 <h2 id="1">1. Estimating Yield and Volatility Term Structures (Nelson-Siegel)</h2>
 <p>The idea of this subtask is to apply the Nelson-Siegel function to an incomplete (in terms of maturities) set of market yields and volatilities. This prepares the data needed to create a short rate tree.</p>
-<p>The Nelson-Siegel model defines the yield curve <img src="projectMBS /html/mbs-valuation_eq00384752939285451007.png" alt="$y(\tau)$" style="width:23px;height:14px;"> as:</p>
+<p>The Nelson-Siegel model defines the yield curve <img src="projectMBS%20/html/mbs-valuation_eq00384752939285451007.png" alt="$y(\tau)$" style="width:23px;height:14px;"> as:</p>
 <p>
-<img src="projectMBS /html/mbs-valuation_eq10598821649972864043.png" alt="$y(\tau) = \beta_0 + \beta_1 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} \right) + \beta_2 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} - e^{-\lambda \tau} \right)$" style="width:287px;height:37px;"></p>
+<img src="projectMBS%20/html/mbs-valuation_eq10598821649972864043.png" alt="$y(\tau) = \beta_0 + \beta_1 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} \right) + \beta_2 \left( \frac{1-e^{-\lambda \tau}}{\lambda \tau} - e^{-\lambda \tau} \right)$" style="width:287px;height:37px;"></p>
 <p>
-<b>Interpretation:</b> In the first step, a squared error function was set up to calculate the residual of true and fitted values. We optimize the parameters <img src="projectMBS /html/mbs-valuation_eq08892760791975262576.png" alt="$\beta_0, \beta_1, \beta_2, \lambda$" style="width:65px;height:14px;"> to minimize this error for both Yield and Volatility.</p>
+<b>Interpretation:</b> In the first step, a squared error function was set up to calculate the residual of true and fitted values. We optimize the parameters <img src="projectMBS%20/html/mbs-valuation_eq08892760791975262576.png" alt="$\beta_0, \beta_1, \beta_2, \lambda$" style="width:65px;height:14px;"> to minimize this error for both Yield and Volatility.</p>
 <pre class="codeinput">
 <span class="comment">% --- Import Data ---</span>
 <span class="comment">% par vector contains: beta0, beta1, beta2, and tau (lambda)</span>
@@ -190,10 +190,10 @@ grid <span class="string">on</span>; xlabel(<span class="string">'Maturity (Year
 <span class="comment">% We see that the volatility curve fits very well, while the yield curve shows some deviations.</span>
 <span class="comment">% This is a trade-off: using more complex functions could improve the fit but might introduce overfitting.</span>
 </pre>
-<img vspace="5" hspace="5" src="projectMBS /html/mbs-valuation_01.png" alt=""> <h2 id="2">2. Calibrating the BDT Short Rate Tree</h2>
+<img vspace="5" hspace="5" src="projectMBS%20/html/mbs-valuation_01.png" alt=""> <h2 id="2">2. Calibrating the BDT Short Rate Tree</h2>
 <p>The goal is to construct a 360-step short rate tree consistent with the smoothed market data. We use a binomial bond pricing model where model price and volatility must match the Nelson-Siegel inputs.</p>
 <p>
-<b>Calibration Logic:</b> 1. <b>First Node:</b> Solved using a simple search to match the short-term bond price. 2. <b>Subsequent Nodes:</b> We calibrate the base rate (<img src="projectMBS /html/mbs-valuation_eq13826276409893519087.png" alt="$r_{d}$" style="width:11px;height:10px;">) and volatility parameter (<img src="projectMBS /html/mbs-valuation_eq09992033592989221171.png" alt="$\sigma$" style="width:8px;height:7px;">) simultaneously. We construct a helper tree to find parameters such that the model price matches the market price.</p>
+<b>Calibration Logic:</b> 1. <b>First Node:</b> Solved using a simple search to match the short-term bond price. 2. <b>Subsequent Nodes:</b> We calibrate the base rate (<img src="projectMBS%20/html/mbs-valuation_eq13826276409893519087.png" alt="$r_{d}$" style="width:11px;height:10px;">) and volatility parameter (<img src="projectMBS%20/html/mbs-valuation_eq09992033592989221171.png" alt="$\sigma$" style="width:8px;height:7px;">) simultaneously. We construct a helper tree to find parameters such that the model price matches the market price.</p>
 <pre class="codeinput">
 <span class="comment">% --- Tree Initialization ---</span>
 T = fittedData.Maturity(end);
@@ -271,7 +271,7 @@ grid <span class="string">on</span>; hold <span class="string">off</span>;
 <span class="comment">% The most extreme outcomes (high interest rate and rate basically zero) are theoretically possible</span>
 <span class="comment">% but statistically unlikely given the binomial distribution.</span>
 </pre>
-<img vspace="5" hspace="5" src="projectMBS /html/mbs-valuation_02.png" alt=""> <h2 id="3">3. Valuing a 30-Year Mortgage-Backed Security (MBS)</h2>
+<img vspace="5" hspace="5" src="projectMBS%20/html/mbs-valuation_02.png" alt=""> <h2 id="3">3. Valuing a 30-Year Mortgage-Backed Security (MBS)</h2>
 <p>We now value a mortgage with a face value of 100M.</p>
 <div>
 <ul>
@@ -282,7 +282,7 @@ grid <span class="string">on</span>; hold <span class="string">off</span>;
 </ul>
 </div>
 <p>
-<img src="projectMBS /html/mbs-valuation_eq09317544988425735217.png" alt="$$V_{prepay}(t) = \min( V_{continuation}, Principal_{outstanding})$$" style="width:274px;height:15px;"></p>
+<img src="projectMBS%20/html/mbs-valuation_eq09317544988425735217.png" alt="$$V_{prepay}(t) = \min( V_{continuation}, Principal_{outstanding})$$" style="width:274px;height:15px;"></p>
 <pre class="codeinput">
 <span class="comment">% --- Mortgage Specs ---</span>
 mortgageRate = 0.07; <span class="comment">% continuous</span>
@@ -431,7 +431,7 @@ ylabel(<span class="string">'Convexity'</span>);
 title(<span class="string">'Convexity'</span>);
 legend(<span class="string">'No Prepayment'</span>,<span class="string">'With Prepayment'</span>,<span class="string">'Location'</span>,<span class="string">'best'</span>);
 </pre>
-<img vspace="5" hspace="5" src="projectMBS /html/mbs-valuation_03.png" alt=""> <h2 id="5">Summary of Findings</h2>
+<img vspace="5" hspace="5" src="projectMBS%20/html/mbs-valuation_03.png" alt=""> <h2 id="5">Summary of Findings</h2>
 <p>A central result of the MBS valuation is the distinctly different interest rate sensitivity of securities with and without a prepayment option. The most prominent feature of the MBS with prepayment is negative convexity as interest rates decline. When rates fall, borrowers have an incentive to refinance, which caps the upside potential of the security from the lender's perspective. Unlike a non-callable bond, whose price continues to rise as discount rates decrease, the value of a prepayable mortgage is bounded above by the outstanding principal. As a result, price appreciation slows and convexity turns negative in low-rate environments.</p>
 <p>A second important observation is the convergence of risk measures at high interest rate levels. As interest rates rise, prepayment becomes increasingly unlikely, rendering the embedded option effectively irrelevant. In this regime, the MBS with prepayment behaves similarly to the non-prepayable MBS, and both duration and convexity converge. This highlights the state-dependent nature of prepayment risk, which is most relevant in low to intermediate interest rate environments.</p>
 <p>The duration profiles further illustrate this asymmetry. The non-prepayable MBS exhibits a positive but decreasing duration, reflecting diminishing sensitivity as rates rise. In contrast, the duration of the prepayable MBS remains close to zero over a wide range of rising interest rates, indicating a high probability of early prepayment in favorable refinancing scenarios. Only at sufficiently high rates does duration begin to increase again, as prepayment is delayed or becomes unlikely. As rates rise further, the stabilizing effect of the prepayment option diminishes and the duration of both securities converges.</p>
