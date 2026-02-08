@@ -1,0 +1,470 @@
+---
+title: null
+author: null
+date: null
+output:
+  html_document:
+    toc: false
+    number_sections: false
+    theme: flatly
+    highlight: tango
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Nonparametric testing of symmetry about an unknown median with ranks (report)
+
+This report discusses the paper *Testing symmetry about an unknown median, via linear rank procedures* (1992) by **R. L. Eubank, V. N. LaRiccia, and R. B. Rosenstein**.
+
+------------------------------------------------------------------------
+
+## 1. About the Authors
+
+-   **Randall L. Eubank**: Professor Emeritus at Arizona State University (formerly Texas A&M). He is well-known for his work in nonparametric regression, spline smoothing, functional data analysis, and statistical computing.
+
+-   **Vincent N. LaRiccia**: A statistician formerly at the University of Delaware. His research focuses on nonparametric statistics, maximum penalized likelihood estimation, and goodness-of-fit testing.
+
+-   **R. B. Rosenstein**: Co-authored methodological papers with Eubank and LaRiccia, focusing specifically on rank-based procedures and goodness-of-fit analysis.
+
+------------------------------------------------------------------------
+
+## 2. The Idea and Context of the Test
+
+### 2.1 The Problem with Existing Methods
+
+Many standard statistical tests (e.g., the Wilcoxon signed-rank test) rely on the assumption that data is symmetrically distributed around a median. When the median $\theta$ is unknown, the standard procedure involves two steps:
+
+1.  **Estimate** the median $\hat{\theta}$
+
+2.  **Test** for symmetry around this estimated center
+
+**The Core Issue:** Ideally, a rank test is "distribution-free," meaning it does not depend on the specific shape of the underlying population distribution. However, estimating the median in the first step introduces variability. To account for this variability in the test statistic's variance, one usually needs to know the value of the density function at the median, $f(\theta)$.
+
+Since $f(\theta)$ is unknown and depends on the distribution, this requirement **destroys the distribution-free property** of the test. Even if we use robust estimators for the median, the asymptotic distribution of the test statistic becomes dependent on the underlying density.
+
+### 2.2 The Eubank-LaRiccia-Rosenstein (ELR) Approach
+
+Eubank et al. propose a solution by framing the problem as comparing density functions. The hypothesis of symmetry about an unknown median $\theta$ is formally:
+
+$$H_0: F(x+\theta) = 1 - F(-x+\theta), \quad \theta \in \mathbb{R}$$
+
+The authors propose comparing the actual density function $F(x+\theta)$ with a "symmetrized" version:
+
+$$H(x) = \frac{F(x+\theta) + 1 - F(-x+\theta)}{2}$$​
+
+Under the null hypothesis H0​, the difference between F and H is zero. The authors construct a test statistic based on this difference, using linear rank procedures derived from orthonormal sequences to handle the estimation step elegantly.
+
+------------------------------------------------------------------------
+
+## 3. Complete Orthonormal Sequences (CONS)
+
+### 3.1 Definition
+
+The test utilizes **Complete Orthonormal Sequences (CONS**) in the space L2​[0,1]. A sequence of functions {pj​} is orthonormal if the inner product satisfies:
+
+$$\langle f_i, f_j \rangle = \int_0^1 f_i(u)f_j(u)du = \begin{cases} 1 & \text{if } i=j \\ 0 & \text{if } i \neq j \end{cases}$$​
+
+### 3.2 Application in the Paper
+
+The idea of the ELR approach lies in how they use these sequences:
+
+1.  They use the **first element** ($p_1$) as the score function to **estimate the median** (θ\^).
+
+2.  They use a **higher-order element** ($p_3$) as the score function for the **test statistic**
+
+By using elements from the same orthonormal basis, the authors utilize the property of orthogonality ($\int p_1 p_3 = 0$). In the asymptotic expansion of the test statistic, the covariance term between the "estimation part" and the "testing part" vanishes because of this orthogonality. This simplifies the asymptotic variance and allows the test to remain (asymptotically) distribution-free.
+
+### 3.3 Orthonormal Bases for $L^2[0,1]$
+
+The authors consider several complete orthonormal sequences (CONS) for $L^2[0,1]$. Among these, **Cosine**, **Hermite**, and **Legendre** bases are examined.\
+Each basis yields paired score functions: the first element is used for **estimation** of the median, and the third element is used for **testing symmetry**.
+
+The cosine basis is defined by $$
+p_j(u) = \sqrt{2}\cos(j\pi u), \quad j \ge 1.
+$$
+
+-   The score functions used are:
+
+    -   For Estimation ($p_1$) $$
+        p_1(u) = \sqrt{2}\cos(\pi u)
+        $$
+
+    -   For Testing ($p_3$) $$
+        p_3(u) = \sqrt{2}\cos(3\pi u)
+        $$
+
+The Hermite basis is obtained by orthonormalizing polynomials with respect to the standard normal distribution $\Phi$. Let $\Phi^{-1}(u)$ denote the standard normal quantile function.
+
+The first two relevant elements are:
+
+-   For Estimation ($p_1$) $$
+    p_1(u) = \Phi^{-1}(u)
+    $$
+
+-   For Testing ($p_3$) $$
+    p_3(u) = \frac{1}{\sqrt{6}}
+    \left[
+    \left(\Phi^{-1}(u)\right)^3 - 3\,\Phi^{-1}(u)
+    \right]
+    $$
+
+When the underlying distribution is uniform on $[0,1]$, orthonormalization of polynomials yields the Legendre polynomial basis, which performed best in finite-sample studies.
+
+The score functions used in the paper are:
+
+-   For Estimation ($p_1$) $$
+    p_1(u) = \sqrt{12}\left(u - \frac{1}{2}\right)
+    $$
+
+-   *(Using this score function corresponds to using the Hodges–Lehmann estimator as median estimate.)*
+
+-   For Testing ($p_3$) $$
+    p_3(u) = \sqrt{7}
+    \left[
+    20\left(u - \frac{1}{2}\right)^3
+    - 3\left(u - \frac{1}{2}\right)
+    \right]
+    $$
+
+------------------------------------------------------------------------
+
+#### 3.3.4 Role of a Common Orthonormal Basis
+
+In all three cases, the estimation score $p_1$ and the testing score $p_3$ are drawn from the **same orthonormal basis**.\
+This implies $$
+\int_0^1 p_1(u)\,p_3(u)\,du = 0,
+$$which causes the covariance term between the estimation and testing components to vanish in the asymptotic expansion of the test statistic.
+
+As a result, the asymptotic variance simplifies and the resulting test remains (asymptotically) distribution-free under the null hypothesis.
+
+------------------------------------------------------------------------
+
+## 4. The Statistic and the Test
+
+### 4.1 The Test Statistic
+
+The linear rank statistic, denoted as $a_n$​, is calculated as:
+
+$$a_n(\hat{\theta}; p) = n^{-1} \sum_{i=1}^{n} p\left(\frac{R_i^+(\hat{\theta})}{2(n+1)} + \frac{1}{2}\right) \text{sgn}(X_i - \hat{\theta})$$
+
+Where:
+
+-   $\hat{\theta}$ is the median estimator.
+
+-   $R_i^+(\hat{\theta})$is the rank of the absolute difference $|X_i - \hat{\theta}|$.
+
+-   $p$ is the score function ($p_{L3}$ in our case).
+
+-   The input to the score function is normalized to effectively represent the upper tail $[0.5, 1.0]$.
+
+The final standardized statistic used for hypothesis testing is:
+
+$$R = \frac{a_n(\hat{\theta}; p_3)}{\sigma_a}$$
+
+### 4.2 Asymptotic Distribution
+
+The authors proved that under local alternatives (deviations from symmetry by a factor $\delta / \sqrt{n}$), the statistic follows a normal distribution:
+
+$$\sqrt{n} a_n \sim N(\delta \mu, \sigma^2)$$
+
+Under the null hypothesis (H0​, where $\delta=0$), this simplifies to a mean of 0.
+
+### 4.3 Example for the calculation
+
+Assume we observe the data $X = (-1.30, -0.83, -0.27, 0.04, 0.31, 0.62, 1.18, 1.71, 2.26)$.
+
+In this section, we want to show how to calculate the statistic using the sequential process described above. For this example, we will use the Legendre orthonormal basis.
+
+In a first step, we need to find an estimate of the median $\hat{\theta}$ such that $a(p_1,\hat{\theta})=0$. Solving this problem corresponds to finding the root of an estimating equation. To solve it by hand, we would need to iterate and approximate our estimate. We could start by trying the population median to see whether it satisfies a=0. The sample median is 0.175 and $p_1=\sqrt{12}(u-\frac{1}{2})$.
+
+```{r}
+x<-c(-1.30,-0.83,-0.27,0.04,0.31,0.62,1.18,1.71,2.30)
+y_p1<-sqrt(12)*(rank(abs(x-median(x)))/(2*(length(x)+1))+0.5-0.5)*sign(x-median(x))
+y_p1
+```
+
+```{r}
+mean(y_p1)
+```
+
+Taking the average of these results gives 0.077 which is close to zero but not zero suggesting that we need to find another estimate for the median.
+
+For the case of the Legendre orthonormal basis, $\hat{\theta}$ is equal to the Hodges-Lehmann estimator. Therefore, we will recalculate our example using the Hodges-Lehman estimator as $\hat{\theta}$.
+
+```{r}
+#' Hodges-Lehmann Estimator
+#' Computes the median of all Walsh averages (x_i + x_j) / 2
+get_hodges_lehmann <- function(x) {
+  n <- length(x)
+  # Create a vector to store all Walsh averages
+  # The size will be n*(n+1)/2
+  walsh_averages <- numeric(n * (n + 1) / 2)
+  k <- 1
+  for (i in 1:n) {
+    for (j in i:n) {
+      walsh_averages[k] <- (x[i] + x[j]) / 2
+      k <- k + 1
+    }
+  }
+  return(median(walsh_averages))
+}
+
+hl_estimator<-get_hodges_lehmann(x)
+hl_estimator
+```
+
+```{r}
+yhl_p1<-sqrt(12)*(rank(abs(x-hl_estimator))/(2*(length(x)+1))+0.5-0.5)*sign(x-hl_estimator)
+yhl_p1
+```
+
+```{r}
+mean(yhl_p1)
+```
+
+We see that a=0 when we use the Hodges-Lehman estimator.
+
+For the second step of the process, we show the calculation for the test of symmetry by using the $p_3$ score function of the same orthonormal basis, in this case $p_3=\sqrt{7}(20(u-\frac{1}{2})^3-3(u-\frac{1}{2}))$.
+
+```{r}
+yhl_p3 <- sqrt(7) * (20 * (rank(abs(x - hl_estimator)) / (2 * (length(x) + 1)))^3 - 3 * (rank(abs(x - hl_estimator)) / (2 * (length(x) + 1)))) * sign(x - hl_estimator)
+yhl_p3
+```
+
+```{r}
+mean(yhl_p3)
+```
+
+Taking the average of these results gives 0.1896 which concludes the calculation of the statistic for now. However, we will come back to this example to apply it to the implementation of the test in R.
+
+------------------------------------------------------------------------
+
+## 5. Study of $\alpha$-levels, power and finite samples
+
+### 5.1 Finite Sample Variance Correction
+
+In order to calculate a p-value, the authors propose to compare $R = \frac{a_n(\hat{\theta}; p_3)}{\sigma_a}$ with a normal distribution where $\hat{\sigma}_a^2 = V_{pn} + d_p$ is the variance approximation under H0.
+
+$V_{pn}$ is the finite sample variance of the statistic for the 2nd step assuming the median is known:
+
+$$V_{pn} = n^{-1} \sum_{i=1}^n \left( p_3 \left[ \frac{i}{2(n+1)} + \frac{1}{2} \right] \right)^2$$
+
+While the asymptotic variance is theoretically clean, small samples (n\<50) require a correction factor $d_p$ in the first step to maintain accurate type one error levels due to the fact that the median is estimated. ​
+
+$d_p$ is chosen to be
+
+$$
+\begin{aligned}d_p &= 0.012 \quad \text{when } p_3 = \text{Cosine} \\d_p &= 0.000 \quad \text{when } p_3 = \text{Legendre} \\d_p &= 0.044 \quad \text{when } p_3 = \text{Hermite}\end{aligned}
+$$
+
+Given that the type one error is evaluated under H0 (probability of rejecting H0 when it is actually true), the variance approximation is valid in this case.
+
+Finally, H0 is rejected when $R_n$ is larger than the upper $\frac{\alpha}{2}$ quantile of a normal distribution.
+
+### 5.2 Study of $\alpha$-level
+
+To study the type one error level, a simulation was done:
+
+-   the test using the different complete orthonormal bases were compared to the Boos test $T_n$ and the modified Triplet test $T_1^*$ (two other tests for testing symmetry)
+
+-   The methods were compared under symmetric distributions (H0) using a nominal level of 0.05 for n=30.
+
+The results were as follows:
+
+|  |  |  |  |  |  |
+|------------|------------|------------|------------|------------|------------|
+| **Distribution** | $\widetilde{R}_n$*: Cosine* | $\widetilde{R}_n$*: Legendre* | $\widetilde{R}_n$*: Hermite* | $T_n$ | $T_n^*$ |
+| **Triangular** | 0.04 | 0.05 | 0.02 | 0.04 | 0.04 |
+| **Normal** | 0.04 | 0.05 | 0.02 | 0.04 | 0.05 |
+| **Logistic** | 0.03 | 0.05 | 0.02 | 0.05 | 0.06 |
+| **Double Exponential** | 0.04 | 0.06 | 0.03 | 0.07 | 0.07 |
+| **t₆** | 0.03 | 0.05 | 0.02 | 0.05 | 0.06 |
+| **t₃** | 0.04 | 0.05 | 0.03 | 0.07 | 0.08 |
+| **Cauchy** | 0.08 | 0.11 | 0.08 | 0.33 | 0.08 |
+
+: Table 1. Monte Carlo simulation estimates
+
+As one can see, the Legendre performed best compared to the other CONS of the ELR procedure. It came closest to the nominal level. However, all distributions have inflated $\alpha$-levels for the heavy-tailed Cauchy distribution.
+
+### 5.3 Study of power
+
+In a second simulation, only the Legrendre test was considered next to the Boos and modified Triplet test, as it performed best in the $\alpha$-level simulation above.
+
+The power was again evaluated using a Monte Carlo simulation, this time considering 17 alternative distributions to symmetry with median 0 (please consider the article for the exact parametrization of the distributions) at $\alpha=0.05$ and n=30. The authors considered generalized lambda distributions, lognormals and contaminated normals.
+
+*Note:* Power is defined under H1​, but the test statistic is standardized using the null variance to control the size. Under local alternatives, the variance under H1 converges to the null variance, so the asymptotic distribution remains valid. However, for small samples or nonlocal alternatives, using a variance estimator based solely on H0 may lead to imperfect calibration. In such cases, consistent estimators such as bootstrapping variance estimation may improve finite-sample performance.
+
+The simulation results were as follows:
+
+|  |  |  |  |  |  |  |  |  |  |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| **Unimodal** | **GLD 2** | **GLD 3** | **GLD 4** | **GLD 5** | **GLD 6** | **GLD 7** | **GLD 8** | **Lognorm σ=0.1** | **Lognorm σ=0.4** |
+| $\tilde{R}_n$ | 0.716 | 0.221 | 0.362 | 0.062 | 0.141 | 0.821 | 0.849 | [0.065]{.underline} | 0.306 |
+| $T_n$ | 0.805 | 0.250 | 0.423 | [0.080]{.underline} | 0.187 | 0.919 | 0.934 | 0.057 | 0.337 |
+| $T^*_1$ | [0.841]{.underline} | [0.315]{.underline} | [0.487]{.underline} | 0.078 | [0.194]{.underline} | [0.928]{.underline} | [0.940]{.underline} | 0.074 | [0.440]{.underline} |
+
+|  |  |  |  |  |  |  |  |  |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| **Shape** | **GLD 1** | **GLD 9** | **GLD 10** | **Weibull c=0.5** | **Weibull c=0.75** | **Weibull c=1** | **Bimodal Eq. 12** | **Bimodal Eq. 13** |
+| $\tilde{R}_n$ | [0.402]{.underline} | [0.265]{.underline} | [0.344]{.underline} | [0.161]{.underline} | [0.149]{.underline} | [0.335]{.underline} | [0.276]{.underline} | [0.210]{.underline} |
+| $T_n$ | 0.348 | 0.176 | 0.246 | 0.113 | 0.090 | 0.238 | 0.245 | 0.181 |
+| $T^*_1$ | 0.330 | 0.118 | 0.179 | 0.092 | 0.079 | 0.194 | 0.273 | 0.159 |
+
+As the underlined power shows the highest power for each distribution, it is obvious that no test consistently outperformed the others. However, ELR Legendre performed best for J or U shaped and bimodal alternatives.
+
+------------------------------------------------------------------------
+
+## 6. Implementation in R
+
+Below is the complete R implementation of the test using the Legendre basis and the Hodges-Lehmann estimator.
+
+### 6.1 Helper Functions
+
+We define the Hodges-Lehmann estimator (same as above) and the Legendre Polynomial $p_3$.
+
+```{r}
+#' Hodges-Lehmann Estimator
+#' Computes the median of all Walsh averages (x_i + x_j) / 2
+get_hodges_lehmann <- function(x) {
+  n <- length(x)
+  # Create a vector to store all Walsh averages
+  # The size will be n*(n+1)/2
+  walsh_averages <- numeric(n * (n + 1) / 2)
+  k <- 1
+  for (i in 1:n) {
+    for (j in i:n) {
+      walsh_averages[k] <- (x[i] + x[j]) / 2
+      k <- k + 1
+    }
+  }
+  return(median(walsh_averages))
+}
+
+#' Third Legendre Polynomial Score Function
+#' p3(u) = sqrt(7) * (20*(u - 0.5)^3 - 3*(u - 0.5))
+legendre_p3 <- function(u) {
+  # We center u around 0.5 as per the formula structure
+  term <- u - 0.5
+  val <- sqrt(7) * (20 * term^3 - 3 * term)
+  return(val)
+}
+```
+
+### 6.2 The Test Function
+
+This function performs the full procedure: estimation, ranking, scoring, and calculating the p-value.
+
+```{r}
+test_symmetry_legendre <- function(x) {
+  n <- length(x)
+  if (n < 2) stop("Sample size must be at least 2")
+  
+  # --- Step 1: Estimate the Median ---
+  # Using Hodges-Lehmann estimator (associated with p1)
+  theta_hat <- get_hodges_lehmann(x)
+  
+  # --- Step 2: Compute Residuals & Ranks ---
+  residuals <- x - theta_hat
+  
+  # Handle the case where x = theta_hat exactly (sign is 0)
+  # Standard practice is often to discard zeros or handle ranks carefully.
+  # Here we follow the formula: sign(0) becomes 0, contributing nothing to sum.
+  signs <- sign(residuals)
+  
+  abs_dev <- abs(residuals)
+  
+  # Rank the absolute deviations
+  # ties.method = "average" is standard for rank tests
+  ranks <- rank(abs_dev, ties.method = "average")
+  
+  # --- Step 3: Compute Scores ---
+  # The argument to p() is u = (R / (2(n+1))) + 0.5
+  u_vals <- (ranks / (2 * (n + 1))) + 0.5
+  scores <- legendre_p3(u_vals)
+  
+  # --- Step 4: Calculate Statistic 'a' ---
+  # a = (1/n) * sum( score * sign )
+  a <- sum(scores * signs) / n
+  
+  # --- Step 5: Variance Correction ---
+  # V_pn (Variance under H0 with known median)
+  # We sum over all possible ranks i=1 to n
+  k <- 1:n
+  u_k <- (k / (2 * (n + 1))) + 0.5
+  v_pn <- (1/n) * sum(legendre_p3(u_k)^2)
+  
+  # Correction term d_p for Legendre is approx 0
+  d_p <- 0.000
+  
+  sigma_sq <- v_pn + d_p
+  sigma <- sqrt(sigma_sq)
+  
+  # --- Step 6: Final R Statistic and P-Value ---
+  if (sigma == 0) return(list(R=NA, p_value=NA))
+  
+  R_stat <- a / sigma
+  
+  # Two-sided p-value from standard normal distribution
+  p_value <- 2 * (1 - pnorm(abs(R_stat)))
+  
+  return(list(
+    theta_hat = theta_hat,
+    statistic_a = a,
+    sigma = sigma,
+    R_statistic = R_stat,
+    p_value = p_value
+  ))
+}
+```
+
+### 6.3 Example Application
+
+We apply the test to the example dataset.
+
+```{r}
+# Example data 
+X_example <- c(-1.30,-0.83,-0.27,0.04,0.31,0.62,1.18,1.71,2.30)
+
+
+# Run the test
+results <- test_symmetry_legendre(X_example)
+
+# Display Results
+cat("=== Test Results ===\n")
+cat("Data:", paste(X_example, collapse=", "), "\n")
+cat("Hodges-Lehmann Estimate (theta_hat):", results$theta_hat, "\n")
+cat("Linear Rank Statistic (a):", round(results$statistic_a, 4), "\n")
+cat("Finite Sample Std Dev (sigma):", round(results$sigma, 4), "\n")
+cat("Standardized Test Statistic (R):", round(results$R_statistic, 4), "\n")
+cat("P-Value:", round(results$p_value, 4), "\n")
+
+if(results$p_value > 0.05){
+  cat("Conclusion: Fail to reject the null hypothesis of symmetry.\n")
+} else {
+  cat("Conclusion: Reject the null hypothesis of symmetry.\n")
+}
+```
+
+## 7. Possible Applications
+
+The report identifies two compelling applications where this specific symmetry test is valuable:
+
+1.  **Physics (Double-Slit Experiment):**
+
+    -   **Context:** In an ideal setup, the interference intensity pattern on a detection screen is symmetric about its central peak.
+
+    -   **Application:** External perturbations (like electric fields or misalignment) introduce skew. By treating intensities as a distribution, this test provides a quantitative method to detect perturbations.
+
+2.  **Materials Science (Particle Synthesis):**
+
+    -   **Context:** Synthesis methods aim for unimodal particle sizes (which should be symmetric).
+
+    -   **Application:** Multimodal distributions (indicating inconsistent particle size) are almost never symmetric. Rejecting symmetry provides statistical evidence of a sample with bimodal or multimodal particle size.
+
+------------------------------------------------------------------------
+
+## 8. Reference
+
+Eubank, R. L., LaRiccia, V. N., & Rosenstein, R. B. (1992). Testing symmetry about an unknown median, via linear rank procedures. Journal of Nonparametric Statistics, 1(4), 301–311. <https://doi.org/10.1080/10485259208832532>
