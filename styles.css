@@ -237,39 +237,58 @@ nav {
     color: var(--ink-soft);
 }
 
-/* ===== Gallery ===== */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+/* ===== LinkedIn banner ===== */
+.linkedin-banner {
+    position: relative;
+    display: block;
+    height: 440px;
+    overflow: hidden;
+    background: #0d0d0d;
+    text-decoration: none;
 }
 
-.gallery img {
+.linkedin-banner img {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    height: 100%;
     object-fit: cover;
+    object-position: center 35%;
+    transition: transform 0.8s ease;
 }
 
-/* ===== LinkedIn ===== */
-.linkedin-section {
-    text-align: center;
+.linkedin-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    transition: background-color 0.3s ease;
 }
 
 .linkedin-link {
-    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 90%;
+    text-align: center;
     font-family: var(--mono);
     font-weight: 700;
-    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-size: clamp(1.6rem, 4.5vw, 3rem);
     letter-spacing: -1px;
-    line-height: 1.1;
-    text-decoration: none;
-    border-bottom: 2px solid var(--ink);
-    transition: color 0.2s ease, border-color 0.2s ease;
+    color: #ffffff;
+    transition: color 0.25s ease;
 }
 
-.linkedin-link:hover {
+.linkedin-banner:hover .linkedin-link {
     color: var(--accent);
-    border-color: var(--accent);
+}
+
+.linkedin-banner:hover::after {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.linkedin-banner:hover img {
+    transform: scale(1.03);
 }
 
 /* ===== Projects ===== */
@@ -329,7 +348,6 @@ nav {
 footer {
     padding: 28px 0;
     border-top: 1px solid var(--line);
-    margin-top: 16px;
 }
 
 .footer-inner {
@@ -367,6 +385,10 @@ footer {
         font-size: 0.72rem;
     }
 
+    .linkedin-banner {
+        height: 300px;
+    }
+
     .hero {
         height: 52vh;
         min-height: 340px;
@@ -383,13 +405,5 @@ footer {
 
     .entry-meta {
         text-align: left;
-    }
-
-    .gallery {
-        grid-template-columns: 1fr;
-    }
-
-    .gallery img {
-        aspect-ratio: 3 / 2;
     }
 }
