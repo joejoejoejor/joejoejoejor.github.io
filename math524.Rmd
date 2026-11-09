@@ -274,7 +274,7 @@ To study the type one error level, a simulation was done:
 The results were as follows:
 
 |  |  |  |  |  |  |
-|------------|------------|------------|------------|------------|------------|
+|----|----|----|----|----|----|
 | **Distribution** | $\widetilde{R}_n$*: Cosine* | $\widetilde{R}_n$*: Legendre* | $\widetilde{R}_n$*: Hermite* | $T_n$ | $T_n^*$ |
 | **Triangular** | 0.04 | 0.05 | 0.02 | 0.04 | 0.04 |
 | **Normal** | 0.04 | 0.05 | 0.02 | 0.04 | 0.05 |
@@ -299,14 +299,14 @@ The power was again evaluated using a Monte Carlo simulation, this time consider
 The simulation results were as follows:
 
 |  |  |  |  |  |  |  |  |  |  |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|----|----|----|----|----|----|----|----|----|----|
 | **Unimodal** | **GLD 2** | **GLD 3** | **GLD 4** | **GLD 5** | **GLD 6** | **GLD 7** | **GLD 8** | **Lognorm σ=0.1** | **Lognorm σ=0.4** |
 | $\tilde{R}_n$ | 0.716 | 0.221 | 0.362 | 0.062 | 0.141 | 0.821 | 0.849 | [0.065]{.underline} | 0.306 |
 | $T_n$ | 0.805 | 0.250 | 0.423 | [0.080]{.underline} | 0.187 | 0.919 | 0.934 | 0.057 | 0.337 |
 | $T^*_1$ | [0.841]{.underline} | [0.315]{.underline} | [0.487]{.underline} | 0.078 | [0.194]{.underline} | [0.928]{.underline} | [0.940]{.underline} | 0.074 | [0.440]{.underline} |
 
 |  |  |  |  |  |  |  |  |  |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|----|----|----|----|----|----|----|----|----|
 | **Shape** | **GLD 1** | **GLD 9** | **GLD 10** | **Weibull c=0.5** | **Weibull c=0.75** | **Weibull c=1** | **Bimodal Eq. 12** | **Bimodal Eq. 13** |
 | $\tilde{R}_n$ | [0.402]{.underline} | [0.265]{.underline} | [0.344]{.underline} | [0.161]{.underline} | [0.149]{.underline} | [0.335]{.underline} | [0.276]{.underline} | [0.210]{.underline} |
 | $T_n$ | 0.348 | 0.176 | 0.246 | 0.113 | 0.090 | 0.238 | 0.245 | 0.181 |
