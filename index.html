@@ -4,350 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Johannes Solibieda</title>
+    <meta name="description" content="Johannes Solibieda – Economics student at the University of St. Gallen. Finance, data science and quantitative projects.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Canela font - using alternative elegant serif with similar characteristics -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cormorant', Georgia, 'Times New Roman', serif;
-            background-color: #ffffff;
-            color: #000000;
-            line-height: 1.6;
-        }
-
-        /* Navigation Bar */
-        nav {
-            background-color: #000000;
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #ffffff;
-            opacity: 0.7;
-        }
-
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 70vh;
-            min-height: 500px;
-            background-color: #000000;
-            overflow: hidden;
-        }
-
-        .hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            filter: grayscale(100%);
-        }
-
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #ffffff;
-            width: 90%;
-            max-width: 1000px;
-        }
-
-        .hero-title {
-            font-size: 4.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        /* Main Content Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 60px;
-        }
-
-        /* Section Styling */
-        .content-section {
-            padding: 100px 0;
-        }
-
-        .section-title {
-            font-size: 4.5rem;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 60px;
-            letter-spacing: -0.5px;
-        }
-
-        /* Grid Layout for Content - Single Column */
-        .content-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .content-card {
-            background-color: #ffffff;
-            padding: 40px;
-            border: 1px solid #000000;
-            border-left: 4px solid #000000;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .card-content {
-            color: #000000;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            font-weight: 400;
-        }
-
-        .card-content ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .card-content li {
-            margin-bottom: 12px;
-            padding-left: 0;
-        }
-
-        /* Dark Content Cards for Full Width Sections */
-        .content-card-dark {
-            background-color: #000000;
-            border-color: #ffffff;
-        }
-
-        .content-card-dark .card-title {
-            color: #ffffff;
-        }
-
-        .content-card-dark .card-content {
-            color: #ffffff;
-        }
-
-        /* Full Width Section */
-        .full-width-section {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 100px 0;
-            margin: 80px 0;
-        }
-
-        .full-width-section .section-title {
-            color: #ffffff;
-        }
-
-        /* Education Section - Black Background */
-        .education-section {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 100px 0;
-        }
-
-        .education-section .section-title {
-            color: #ffffff;
-        }
-
-        .education-section .content-card {
-            background-color: #000000;
-            border-color: #ffffff;
-        }
-
-        .education-section .card-title {
-            color: #ffffff;
-        }
-
-        .education-section .card-content {
-            color: #ffffff;
-        }
-
-        /* Image Gallery Section */
-        .image-gallery {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 80px 0;
-            flex-wrap: wrap;
-        }
-
-        .gallery-image {
-            width: calc(33.333% - 20px);
-            max-width: 350px;
-            height: 500px;
-            object-fit: cover;
-            filter: grayscale(100%);
-        }
-
-        /* LinkedIn Section */
-        .linkedin-section {
-            text-align: center;
-            padding: 80px 0;
-        }
-
-        .linkedin-link {
-            display: inline-block;
-            color: #ffffff;
-            background-color: #000000;
-            text-decoration: none;
-            padding: 30px 60px;
-            font-size: 4.5rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            transition: all 0.3s ease;
-            border: 2px solid #000000;
-        }
-
-        .linkedin-link:hover {
-            background-color: #ffffff;
-            color: #000000;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 60px 0;
-            text-align: center;
-        }
-
-        .footer-text {
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 968px) {
-            .nav-container,
-            .container {
-                padding: 0 30px;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-
-            .section-title {
-                font-size: 2.5rem;
-            }
-
-            .content-grid {
-                gap: 30px;
-            }
-
-            .nav-links {
-                gap: 20px;
-            }
-
-            .gallery-image {
-                width: 100%;
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-
-            .content-section {
-                padding: 60px 0;
-            }
-
-            .section-title {
-                font-size: 2rem;
-                margin-bottom: 40px;
-            }
-
-            .linkedin-link {
-                font-size: 2rem;
-                padding: 20px 40px;
-            }
-
-            .content-card {
-                padding: 30px;
-            }
-
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -355,86 +16,86 @@
         <div class="nav-container">
             <a href="index.html" class="logo">Johannes Solibieda</a>
             <ul class="nav-links">
-                <li><a href="index.html">HOME</a></li>
+                <li><a href="index.html" class="active">HOME</a></li>
                 <li><a href="projects.html">PROJECTS</a></li>
+                <li><a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" rel="noopener" class="nav-cta">LINKEDIN</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <img src="style-pictures/IMG_2701.jpeg" alt="Hero Image" class="hero-image">
+    <header class="hero">
+        <img src="style-pictures/web/hero-fog.jpg" alt="Mountain peak rising above a sea of clouds" class="hero-image">
         <div class="hero-content">
             <h1 class="hero-title">Johannes Solibieda</h1>
-            <p class="hero-subtitle">Economics Student | Finance | Data Science</p>
+            <ul class="hero-tags">
+                <li>Economics Student</li>
+                <li>Finance</li>
+                <li>Data Science</li>
+            </ul>
         </div>
-    </section>
+    </header>
 
-    <!-- Education Section (Full Width) -->
-    <section class="education-section">
-        <div class="container">
-            <h2 class="section-title">Education</h2>
-            <div class="content-grid">
-                <div class="content-card">
-                    <h3 class="card-title">University of St. Gallen</h3>
-                    <p class="card-content">B.A. Economics</p>
-                </div>
-                <div class="content-card">
-                    <h3 class="card-title">McGill University, Montreal</h3>
-                    <p class="card-content">Exchange Student Finance & Mathematics</p>
-                </div>
-                <div class="content-card">
-                    <h3 class="card-title">Hardtberg-Gymnasium Bonn</h3>
-                    <p class="card-content">Abitur</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Work Experience Section -->
-        <section class="content-section">
-            <h2 class="section-title">Work Experience</h2>
-            <div class="content-grid">
-                <div class="content-card">
-                    <h3 class="card-title">Zurich Data Scientists</h3>
-                    <p class="card-content">Data Science Intern (2025)</p>
-                </div>
-                <div class="content-card">
-                    <h3 class="card-title">Oniq</h3>
-                    <p class="card-content">Business Development Intern (2024)</p>
-                </div>
+    <main>
+        <!-- Education -->
+        <section class="section">
+            <div class="container section-grid">
+                <h2 class="section-title"><span class="eyebrow">01</span>Education</h2>
+                <ul class="entry-list">
+                    <li class="entry">
+                        <span class="entry-title">University of St. Gallen</span>
+                        <span class="entry-meta">B.A. Economics</span>
+                    </li>
+                    <li class="entry">
+                        <span class="entry-title">McGill University, Montreal</span>
+                        <span class="entry-meta">Exchange Student Finance &amp; Mathematics</span>
+                    </li>
+                    <li class="entry">
+                        <span class="entry-title">Hardtberg-Gymnasium Bonn</span>
+                        <span class="entry-meta">Abitur</span>
+                    </li>
+                </ul>
             </div>
         </section>
-    </div>
 
-    <!-- Interests Section (Full Width) -->
-    <section class="full-width-section">
-        <div class="container">
-            <h2 class="section-title">Interests, Certifications & Social Engagement</h2>
-            <div class="content-grid">
-                <div class="content-card content-card-dark">
-                    <h3 class="card-title">Academic</h3>
-                    <div class="card-content">
+        <!-- Work Experience -->
+        <section class="section">
+            <div class="container section-grid">
+                <h2 class="section-title"><span class="eyebrow">02</span>Work Experience</h2>
+                <ul class="entry-list">
+                    <li class="entry">
+                        <span class="entry-title">Zurich Data Scientists</span>
+                        <span class="entry-meta">Data Science Intern · 2025</span>
+                    </li>
+                    <li class="entry">
+                        <span class="entry-title">Oniq</span>
+                        <span class="entry-meta">Business Development Intern · 2024</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Interests -->
+        <section class="section">
+            <div class="container section-grid">
+                <h2 class="section-title"><span class="eyebrow">03</span>Interests, Certifications &amp; Engagement</h2>
+                <div class="cards">
+                    <div class="card">
+                        <h3 class="card-title">Academic</h3>
                         <ul>
                             <li>French Baccalauréat</li>
                             <li>German Academic Scholarship Foundation</li>
                         </ul>
                     </div>
-                </div>
-                <div class="content-card content-card-dark">
-                    <h3 class="card-title">Social Engagement</h3>
-                    <div class="card-content">
+                    <div class="card">
+                        <h3 class="card-title">Social Engagement</h3>
                         <ul>
                             <li>Project Leader and Consultant, Student Impact</li>
                             <li>Swimming Instructor for Kids with Disabilities (SWAM Canada)</li>
                         </ul>
                     </div>
-                </div>
-                <div class="content-card content-card-dark">
-                    <h3 class="card-title">Professional Interests</h3>
-                    <div class="card-content">
+                    <div class="card">
+                        <h3 class="card-title">Professional Interests</h3>
                         <ul>
                             <li>Fixed Income Investing</li>
                             <li>Securitization of Illiquid Assets</li>
@@ -445,28 +106,45 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Image Gallery Section -->
-    <div class="container">
-        <section class="image-gallery">
-            <img src="style-pictures/IMG_1740.jpeg" alt="Black and white landscape photography" class="gallery-image">
-            <img src="style-pictures/IMG_6621.jpeg" alt="Black and white mountain scenery" class="gallery-image">
-            <img src="style-pictures/IMG_9164.jpeg" alt="Black and white outdoor scene" class="gallery-image">
         </section>
-    </div>
 
-    <!-- LinkedIn Section -->
-    <div class="container">
-        <section class="linkedin-section">
-            <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" class="section-title">Connect on LinkedIn</a>
+        <!-- Gallery -->
+        <section class="section">
+            <div class="container">
+                <div class="gallery">
+                    <figure class="tall"><img src="style-pictures/web/forest-snow.jpg" alt="Snowy forest path below a mountain face" loading="lazy"></figure>
+                    <figure class="wide"><img src="style-pictures/web/ski-jump-dusk.jpg" alt="Alpine peaks at dusk above a forest" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/alpine-peaks.jpg" alt="Snow-covered alpine peaks under a clear sky" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/saentis-cloud.jpg" alt="Mountain summit with a cloud cap" loading="lazy"></figure>
+                    <figure class="wide"><img src="style-pictures/web/alpstein-ridge.jpg" alt="Long mountain ridge in morning light" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/spring-flowers.jpg" alt="Yellow alpine flowers in front of a mountain" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/sunset-hills.jpg" alt="Hills silhouetted against a sunset" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/frozen-lake.jpg" alt="Frozen lake surrounded by mountains at dusk" loading="lazy"></figure>
+                    <figure><img src="style-pictures/web/valley-light.jpg" alt="Mountain valley in evening light" loading="lazy"></figure>
+                </div>
+            </div>
         </section>
-    </div>
+
+        <!-- LinkedIn CTA -->
+        <section class="section">
+            <div class="container">
+                <div class="cta">
+                    <div>
+                        <p class="cta-title">Let's connect</p>
+                        <p class="cta-text">Open to conversations about finance, data science and new opportunities.</p>
+                    </div>
+                    <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" rel="noopener" class="button">Connect on LinkedIn →</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer>
-        <p class="footer-text">© 2025 Johannes Solibieda</p>
+        <div class="container footer-inner">
+            <span>© 2026 Johannes Solibieda</span>
+            <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
     </footer>
 </body>
 </html>

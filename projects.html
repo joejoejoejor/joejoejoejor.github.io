@@ -4,234 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects - Johannes Solibieda</title>
+    <meta name="description" content="Quantitative finance and coding projects by Johannes Solibieda.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Canela font - using Cormorant as alternative elegant serif with similar characteristics -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Cormorant', Georgia, 'Times New Roman', serif;
-            background-color: #ffffff;
-            color: #000000;
-            line-height: 1.6;
-        }
-
-        /* Navigation Bar */
-        nav {
-            background-color: #000000;
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #ffffff;
-            opacity: 0.7;
-        }
-
-        /* Hero Section */
         .hero {
-            position: relative;
-            height: 50vh;
-            min-height: 400px;
-            background-color: #000000;
-            overflow: hidden;
-        }
-
-        .hero-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            filter: grayscale(100%);
-        }
-
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #ffffff;
-            width: 90%;
-            max-width: 1000px;
-        }
-
-        .hero-title {
-            font-size: 6rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        /* Main Content Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 60px;
-        }
-
-        /* Content Section */
-        .content-section {
-            padding: 120px 0;
-            min-height: 50vh;
-        }
-
-        .section-intro {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .intro-text {
-            font-size: 1.3rem;
-            color: #000000;
-            line-height: 1.8;
-            font-weight: 400;
-        }
-
-        .coming-soon {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 40px;
-            background-color: #ffffff;
-            border: 2px solid #000000;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #000000;
-        }
-
-        /* Projects Grid (for future use) */
-        .projects-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .project-card {
-            background-color: #ffffff;
-            padding: 40px;
-            border: 2px solid #000000;
-            transition: transform 0.3s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #000000;
-            margin-bottom: 15px;
-        }
-
-        .project-description {
-            color: #000000;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #000000;
-            color: #ffffff;
-            padding: 60px 0;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        .footer-text {
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 968px) {
-            .nav-container,
-            .container {
-                padding: 0 30px;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .intro-text {
-                font-size: 1.1rem;
-            }
-
-            .nav-links {
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .hero-title {
-                font-size: 2.2rem;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-
-            .content-section {
-                padding: 80px 0;
-            }
-
-            .intro-text {
-                font-size: 1rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
+            height: 42vh;
+            min-height: 300px;
+            max-height: 460px;
         }
     </style>
 </head>
@@ -242,58 +24,60 @@
             <a href="index.html" class="logo">Johannes Solibieda</a>
             <ul class="nav-links">
                 <li><a href="index.html">HOME</a></li>
-                <li><a href="projects.html">PROJECTS</a></li>
+                <li><a href="projects.html" class="active">PROJECTS</a></li>
+                <li><a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" rel="noopener" class="nav-cta">LINKEDIN</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <img src="style-pictures/IMG_1148.jpeg" alt="Projects Hero Image" class="hero-image">
+    <header class="hero">
+        <img src="style-pictures/web/hero-panorama.jpg" alt="Panorama of snowy alpine ridges" class="hero-image">
         <div class="hero-content">
             <h1 class="hero-title">Projects</h1>
+            <p class="hero-subtitle">Quantitative finance and coding work.</p>
         </div>
-    </section>
+    </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <section class="content-section">
-            <div class="section-intro">
-                <p class="intro-text">
-                    This page showcases quantitative finance and coding projects.
-                </p>
-            </div>
+    <main>
+        <section class="section">
+            <div class="container">
+                <p class="intro-text">This page showcases quantitative finance and coding projects.</p>
 
-            <!-- Projects Grid -->
-            <div class="projects-grid">
-                <a href="mbs-valuation.html" style="text-decoration: none; color: inherit;">
-                    <div class="project-card">
+                <div class="projects-grid">
+                    <a href="mbs-valuation.html" class="project-card">
+                        <div class="project-tags"><span>Fixed Income</span><span>MATLAB</span></div>
                         <h3 class="project-title">Valuing MBS Options</h3>
                         <p class="project-description">
-                            A comprehensive analysis of Mortgage-Backed Securities valuation incorporating prepayment options. 
-                            This project implements the Nelson-Siegel yield curve model, constructs a Black-Derman-Toy short rate tree, 
-                            and analyzes the impact of prepayment options on MBS value, duration, and convexity. 
+                            A comprehensive analysis of Mortgage-Backed Securities valuation incorporating prepayment options.
+                            This project implements the Nelson-Siegel yield curve model, constructs a Black-Derman-Toy short rate tree,
+                            and analyzes the impact of prepayment options on MBS value, duration, and convexity.
                             Includes full MATLAB implementation with detailed mathematical derivations.
                         </p>
-                    </div>
-                </a>
-                
-                <a href="math524.html" style="text-decoration: none; color: inherit;">
-                    <div class="project-card">
+                        <span class="project-link">View project →</span>
+                    </a>
+
+                    <a href="math524.html" class="project-card">
+                        <div class="project-tags"><span>Statistics</span><span>R</span></div>
                         <h3 class="project-title">Nonparametric testing of symmetry about an unknown median with ranks (report)</h3>
                         <p class="project-description">
-                            A statistical analysis report exploring nonparametric methods for testing symmetry about an unknown median using rank-based tests. 
+                            A statistical analysis report exploring nonparametric methods for testing symmetry about an unknown median using rank-based tests.
                             This project examines the theoretical foundations and practical applications of distribution-free statistical testing methods.
                         </p>
-                    </div>
-                </a>
+                        <span class="project-link">Read report →</span>
+                    </a>
+                </div>
             </div>
         </section>
-    </div>
+    </main>
 
     <!-- Footer -->
     <footer>
-        <p class="footer-text">© 2025 Johannes Solibieda</p>
+        <div class="container footer-inner">
+            <span>© 2026 Johannes Solibieda</span>
+            <a href="https://www.linkedin.com/in/johannes-solibieda/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
     </footer>
 </body>
 </html>
