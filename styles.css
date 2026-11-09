@@ -251,6 +251,10 @@ nav {
 }
 
 /* ===== LinkedIn ===== */
+.linkedin-section {
+    text-align: center;
+}
+
 .linkedin-link {
     display: inline-block;
     font-family: var(--mono);
