@@ -1,5 +1,6 @@
 ---
 title: null
+pagetitle: "Nonparametric testing of symmetry about an unknown median with ranks"
 author: null
 date: null
 output:
@@ -14,7 +15,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Nonparametric testing of symmetry about an unknown median with ranks (report)
+# Nonparametric testing of symmetry about an unknown median with ranks
 
 This report discusses the paper *Testing symmetry about an unknown median, via linear rank procedures* (1992) by **R. L. Eubank, V. N. LaRiccia, and R. B. Rosenstein**.
 
